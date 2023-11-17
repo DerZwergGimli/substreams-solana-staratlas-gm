@@ -4,6 +4,9 @@
 
 - `substreams protogen substreams.yaml --exclude-paths="sf/substreams,google"`
 
+### Execute
+-> see makefile
+
 # Run
 
 1. `docker-compose up `
