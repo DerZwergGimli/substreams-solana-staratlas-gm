@@ -1,0 +1,51 @@
+specVersion: v0.1.0
+package:
+  name: 'substreams_staratlas_market'
+  version: v2.0.0
+
+imports:
+  database_change: https://github.com/streamingfast/substreams-sink-database-changes/releases/download/v1.2.0/substreams-database-change-v1.2.0.spkg
+  sql: https://github.com/streamingfast/substreams-sink-sql/releases/download/protodefs-v1.0.3/substreams-sink-sql-protodefs-v1.0.3.spkg
+
+
+protobuf:
+  files:
+    - block_meta.proto
+    - sol_token_program.proto
+    - star_atlas_galactic_marketplace.proto
+    - sol_transaction_instruction.proto
+  importPaths:
+    - ./proto
+
+binaries:
+  default:
+    type: wasm/rust-v1
+    file: ./target/wasm32-unknown-unknown/release/substreams.wasm
+
+modules:
+  - name: map_market_instructions
+    kind: map
+    inputs:
+      - source: sf.solana.type.v1.Block
+    output:
+      type: proto:sa.gm.market.v1.GalacticMarketplaceInstructions
+
+  - name: db_out
+    kind: map
+    inputs:
+      - map: map_market_instructions
+    output:
+      type: proto:sf.substreams.sink.database.v1.DatabaseChanges
+
+
+sink:
+  module: db_out
+  type: sf.substreams.sink.sql.v1.Service
+  config:
+    schema: "./schema.sql"
+    wire_protocol_access: true
+    engine: postgres
+    postgraphile_frontend:
+      enabled: true
+    pgweb_frontend:
+      enabled: true

@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package sol.transaction.instruction.v1;
+
+
+
+
+
+message Instructions {
+  repeated Instruction instructions = 1;
+}
+
+message Instruction {
+  string name = 1;
+  string signature = 2;
+  repeated Account accounts = 3;
+  repeated Arg args = 4;
+  repeated Arg additional = 5;
+
+}
+
+message Account {
+  string name = 1;
+  string address = 2;
+  optional bool isMut = 3;
+  optional bool isSigner = 4;
+}
+
+message Arg {
+  string name = 1;
+  string type = 2;
+  string value = 3;
+}

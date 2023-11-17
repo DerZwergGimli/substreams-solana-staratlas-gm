@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+import "sol_token_program.proto";
+
+package sa.gm.market.v1;
+
+
+message GalacticMarketplaceInstructions{
+  repeated GalacticMarketplaceInstruction galactic_marketplace_instructions = 1;
+}
+
+message GalacticMarketplaceInstruction {
+  Instruction instruction = 1;
+  MetaData meta_data = 2;
+  repeated Account accounts = 3;
+  repeated Arg args = 4;
+  repeated Arg parsed = 5;
+  repeated sol.token.program.v1.TokenProgram inner_instructions = 6;
+
+  enum Instruction {
+    CREATE_ACCOUNT_WITH_SEED = 0;
+    INIT_MARKETPLACE = 1;
+    PROCESS_CANCEL = 2;
+    PROCESS_EXCHANGE = 3;
+    PROCESS_INITIALIZE_BUY = 4;
+    PROCESS_INITIALIZE_SELL = 5;
+    DEREGISTER_CURRENCY = 6;
+    UPDATE_CURRENCY_ROYALTY = 7;
+    INIT_OPEN_ORDERS_COUNTER = 8;
+    REGISTER_CURRENCY = 9;
+    UPDATE_ATLAS_RATE = 10;
+    INITIALIZE_MARKETPLACE = 11;
+    INITIALIZE_OPEN_ORDERS_COUNTER = 12;
+    UPDATE_CURRENCY_VAULT = 13;
+    UNKNOWN_TRANSACTION = 14;
+  }
+
+  message Account {
+    string name = 1;
+    string address = 2;
+    optional bool isMut = 3;
+    optional bool isSigner = 4;
+  }
+
+  message Arg {
+    string name = 1;
+    string type = 2;
+    string value = 3;
+  }
+
+  message MetaData {
+    string signature = 1;
+    int64 timestamp = 2;
+    uint64 block = 3;
+  }
+
+
+}

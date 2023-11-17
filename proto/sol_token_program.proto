@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package sol.token.program.v1;
+
+message TokenProgram {
+  oneof program {
+    TokenTransferChecked token_transfer_checked = 1;
+  }
+}
+
+message TokenTransferChecked {
+  string source = 4;
+  string destination = 2;
+  string authority = 1;
+  string mint = 3;
+
+  TokenAmount tokenAmount = 5;
+
+  message TokenAmount {
+    uint64 amount = 1;
+    uint32 decimals = 2;
+    float uiAmount = 3;
+    string uiAmountString = 4;
+  }
+}
+
+
+
+
