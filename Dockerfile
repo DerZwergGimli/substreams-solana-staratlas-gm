@@ -23,8 +23,10 @@ USER root
 ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
 
 # Install Substreams
+USER linuxbrew
 RUN brew install gcc
 RUN brew install streamingfast/tap/substreams
+USER root
 RUN substreams --version
 
 # Install Substrams Postgress
