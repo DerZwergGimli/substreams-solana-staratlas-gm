@@ -2,7 +2,7 @@ FROM debian
 
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -y build-essential procps curl file git curl
+RUN apt-get install -y build-essential procps curl file git curl jq
 RUN rm -rf /var/lib/apt/lists/*
 #
 ## Install GO
