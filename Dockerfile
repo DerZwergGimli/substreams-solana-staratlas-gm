@@ -37,12 +37,11 @@ RUN apt-get upgrade -y
 #RUN substreams-sink-sql
 
 # Setup files
-RUN mkdir /home/run
-RUN cd /home/run && curl -OL https://github.com/DerZwergGimli/substreams-solana-staratlas-gm/releases/download/v2.0.0/substreams-staratlas-market-v2.0.0.spkg
-COPY /substreams.prod.yaml /home/run/substreams.yaml
-COPY /schema.sql /home/run
 
-RUN ls /home/run
+RUN cd / && curl -OL https://github.com/DerZwergGimli/substreams-solana-staratlas-gm/releases/download/v2.0.0/substreams-staratlas-market-v2.0.0.spkg
+COPY /substreams.prod.yaml /substreams.yaml
+COPY /schema.sql /
+RUN ls /
 
 
 
