@@ -43,10 +43,6 @@ COPY /schema.sql /
 COPY /substreams.wasm /
 RUN ls /
 
-ENV SUBSTREAMS_URL="https://auth.streamingfast.io/v1/auth/issue"
-RUN export SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token)
-
-
 
 
 
