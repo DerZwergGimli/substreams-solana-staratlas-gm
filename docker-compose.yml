@@ -50,21 +50,18 @@ services:
     image: derzwerggimli/substreams-solana-staratlas-gm
     entrypoint: "substreams-sink-sql setup 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml"
 
+
+
   substream_run:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "substreams-sink-sql run 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only"
+    entrypoint: "source env_init && substreams-sink-sql run 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-
 
 
 
   substream_run2:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "echo $SUBSTREAMS_API_TOKEN"
+    entrypoint: "source env_init && echo $STREAMINGFAST_KEY"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-
-
-
-
