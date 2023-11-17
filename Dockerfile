@@ -18,6 +18,7 @@ RUN useradd -m -s /bin/bash linuxbrew && \
 USER linuxbrew
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 USER root
+RUN chown -R $CONTAINER_USER: /home/linuxbrew/.linuxbrew
 ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
 
 # Install Substreams
