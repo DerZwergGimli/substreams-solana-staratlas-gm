@@ -39,7 +39,7 @@ jobs:
 
       - name: Check formating
         uses: actions-rs/cargo@v1
-        env:
+        #env:
         #  RUSTFLAGS: "-D warnings"
         with:
           command: fmt
