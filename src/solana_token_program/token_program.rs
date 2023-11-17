@@ -4,7 +4,7 @@ use prost::Message;
 use substreams::errors::Error;
 use substreams::log::info;
 use substreams_solana::pb::sol::v1::CompiledInstruction;
-use crate::helper::base2String::account_as_string;
+use crate::helper::base2string::account_as_string;
 use crate::pb::sol::token::program::v1::token_program::Program;
 use crate::pb::sol::token::program::v1::{TokenProgram, TokenTransferChecked};
 use crate::pb::sol::token::program::v1::token_transfer_checked::TokenAmount;

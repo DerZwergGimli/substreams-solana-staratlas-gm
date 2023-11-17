@@ -7,7 +7,7 @@ use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, Tr
 use crate::galactic_marketplace::currencies::get_currency_decimals;
 use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_15, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
-use crate::helper::base2String::account_as_string;
+use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
 use crate::pb::sa::gm::market::v1::GalacticMarketplaceInstruction;
 use crate::pb::sol::token::program::v1::token_program::Program;
@@ -279,10 +279,8 @@ impl GalacticMarketplaceInstruction {
                                 }
                             }
                         }
-                        0 => {
-                            (meta.clone().post_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount
-                                - meta.clone().pre_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount)
-                        }
+                        0 => (meta.clone().post_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount
+                            - meta.clone().pre_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount),
                         _ => { return Err(anyhow!("No match on inner instruction length= {}!", inner_instructions.len())); }
                     };
                 info!("fee={}", fee);

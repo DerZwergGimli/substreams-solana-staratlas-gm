@@ -4,7 +4,7 @@ use substreams::errors::Error;
 
 use crate::galactic_marketplace::gm_accounts::{PROCESS_CANCEL_ACCOUNTS, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_INITIALIZE_ACCOUNTS};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
-use crate::helper::base2String::account_as_string;
+use crate::helper::base2string::account_as_string;
 use crate::pb::sol::transaction::instruction::v1::{Account, Arg};
 
 #[derive(Clone, Debug, PartialEq)]
