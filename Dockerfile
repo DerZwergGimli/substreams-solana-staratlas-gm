@@ -43,6 +43,8 @@ COPY /schema.sql /
 COPY /substreams.wasm /
 RUN ls /
 
+COPY /env_init.sh /
+RUN ./env_init.sh
 
 
 
