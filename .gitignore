@@ -1,3 +1,4 @@
-*.spkg
-target/
+target
 .idea
+data
+.env
