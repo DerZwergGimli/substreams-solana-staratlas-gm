@@ -55,7 +55,6 @@ services:
     entrypoint: "substreams-sink-sql run 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-      SUBSTREAMS_API_TOKEN: $(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token)
 
 
 
@@ -65,7 +64,7 @@ services:
     entrypoint: "echo $SUBSTREAMS_API_TOKEN"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-      SUBSTREAMS_API_TOKEN: ${LINK}
+
 
 
 
