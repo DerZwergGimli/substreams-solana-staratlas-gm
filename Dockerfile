@@ -44,7 +44,7 @@ COPY /substreams.wasm /
 RUN ls /
 
 ENV SUBSTREAMS_URL="https://auth.streamingfast.io/v1/auth/issue"
-ENV SUBSTREAMS_API_TOKEN=curl $SUBSTREAMS_URL -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token
+ENV SUBSTREAMS_API_TOKEN='$(curl $SUBSTREAMS_URL -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token)'
 
 
 
