@@ -2,8 +2,8 @@ FROM debian
 
 RUN apt-get update
 RUN apt-get upgrade -y
-#RUN apt-get install -y build-essential procps curl file git curl
-#RUN rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y build-essential procps curl file git curl
+RUN rm -rf /var/lib/apt/lists/*
 #
 ## Install GO
 #RUN curl -OL https://golang.org/dl/go1.16.7.linux-amd64.tar.gz
