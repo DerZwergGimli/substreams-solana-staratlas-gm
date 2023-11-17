@@ -1,4 +1,4 @@
-FROM debian-slim
+FROM debian
 
 RUN apt-get update
 RUN apt-get upgrade -y
