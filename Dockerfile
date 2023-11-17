@@ -13,12 +13,13 @@ RUN go version
 
 
 # Install Homebew
-RUN useradd -m -s /bin/bash linuxbrew && \
-    echo 'linuxbrew ALL=(ALL) NOPASSWD:ALL' >>/etc/sudoers
+RUN useradd -m -s /bin/zsh linuxbrew && \
+    usermod -aG sudo linuxbrew &&  \
+    mkdir -p /home/linuxbrew/.linuxbrew && \
+    chown -R linuxbrew: /home/linuxbrew/.linuxbrew
 USER linuxbrew
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 USER root
-RUN chown -R $CONTAINER_USER: /home/linuxbrew/.linuxbrew
 ENV PATH=$PATH:/home/linuxbrew/.linuxbrew/bin
 
 # Install Substreams
