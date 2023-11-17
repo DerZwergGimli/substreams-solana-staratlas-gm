@@ -28,7 +28,7 @@ RUN rm -rf /var/lib/apt/lists/*
 #RUN brew install streamingfast/tap/substreams
 #USER root
 #RUN substreams --version
-#
+
 ## Install Substrams Postgress
 RUN curl -OL https://github.com/streamingfast/substreams-sink-sql/releases/download/v3.0.5/substreams-sink-sql_linux_x86_64.tar.gz
 RUN mkdir /home/substreams-sink-sql
@@ -36,11 +36,11 @@ RUN tar -C /home/substreams-sink-sql -xvf substreams-sink-sql_linux_x86_64.tar.g
 ENV PATH=$PATH:/home/substreams-sink-sql
 RUN substreams-sink-sql
 
-# Setup files
-
+## Setup files
 RUN cd / && curl -OL https://github.com/DerZwergGimli/substreams-solana-staratlas-gm/releases/download/v2.0.0/substreams-staratlas-market-v2.0.0.spkg
 COPY /substreams.prod.yaml /substreams.yaml
 COPY /schema.sql /
+COPY /substreams.wasm /
 RUN ls /
 
 
