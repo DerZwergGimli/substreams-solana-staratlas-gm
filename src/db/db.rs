@@ -1,5 +1,5 @@
-use std::fmt::format;
-use substreams::log::info;
+
+
 use substreams_database_change::tables::Tables;
 use crate::pb::sa::gm::market::v1::{GalacticMarketplaceInstruction, GalacticMarketplaceInstructions};
 

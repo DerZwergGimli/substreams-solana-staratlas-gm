@@ -3,7 +3,6 @@ use borsh::BorshDeserialize;
 
 pub const GM_PROGRAM: &str = "traderDnaR5w6Tcoi3NFm53i48FTDNbGjBSZwWXDRrg";
 
-pub mod gm;
 mod gm_accounts;
 mod gm_args;
 pub mod galactic_marketplace;

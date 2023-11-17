@@ -73,7 +73,6 @@ pub const PROCESS_INITIALIZE_ACCOUNTS: [&str; 14] = [
     "tokenProgram",
 ];
 
-
 pub const PROCESS_CANCEL_ACCOUNTS: [&str; 10] = [
     "signer",
     "orderInitializer",
