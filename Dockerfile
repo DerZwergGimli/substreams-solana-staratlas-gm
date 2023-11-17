@@ -31,9 +31,8 @@ RUN substreams-sink-sql
 # Setup files
 RUN mkdir /home/run
 RUN cd /home/run && curl -OL https://github.com/DerZwergGimli/substreams-solana-staratlas-gm/releases/download/v2.0.0/substreams-staratlas-market-v2.0.0.spkg
-COPY /substreams.yaml /home/run
+COPY /substreams.prod.yaml /home/run/substreams.yaml
 COPY /schema.sql /home/run
-COPY ./target/wasm32-unknown-unknown/release/substreams.wasm /home/run/target/wasm32-unknown-unknown/release/substreams.wasm
 
 RUN ls /home/run
 
