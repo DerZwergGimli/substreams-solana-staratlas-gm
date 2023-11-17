@@ -5,7 +5,7 @@ on:
     tags:
       - "[a-z0-9]+-v*"
     branches:
-      - "main"
+      - "master"
       - "develop"
       - "release/v*"
       - "feature/*"
