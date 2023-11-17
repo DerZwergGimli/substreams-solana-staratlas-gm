@@ -2,7 +2,7 @@ FROM debian
 
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install -y build-essential procps curl file git curl jq
+RUN apt-get install -y build-essential procps curl file git curl
 RUN rm -rf /var/lib/apt/lists/*
 #
 ## Install GO
@@ -43,7 +43,7 @@ COPY /schema.sql /
 COPY /substreams.wasm /
 RUN ls /
 
-ENV SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token)
+ENV SUBSTREAMS_API_TOKEN=$(curl "https://auth.streamingfast.io/v1/auth/issue" -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token)
 
 
 
