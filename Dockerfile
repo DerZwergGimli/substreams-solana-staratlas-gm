@@ -44,6 +44,8 @@ COPY /substreams.wasm /
 RUN ls /
 
 COPY /env_init /
+COPY /run_substream.sh /
+RUN chmod +x ./run_substream.sh
 
 
 

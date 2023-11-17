@@ -62,6 +62,6 @@ services:
 
   substream_run2:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "source env_init && echo $STREAMINGFAST_KEY"
+    entrypoint: "source env_init && echo $SUBSTREAMS_API_TOKEN"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
