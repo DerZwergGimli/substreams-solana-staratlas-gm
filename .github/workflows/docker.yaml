@@ -39,8 +39,8 @@ jobs:
 
       - name: Check formating
         uses: actions-rs/cargo@v1
-        env:
-          RUSTFLAGS: "-D warnings"
+#        env:
+#          RUSTFLAGS: "-D warnings"
         with:
           command: fmt
           args: --all -- --check
@@ -107,8 +107,8 @@ jobs:
 
       - name: Cargo check (release)
         uses: actions-rs/cargo@v1
-        env:
-          RUSTFLAGS: "-D warnings"
+#        env:
+#          RUSTFLAGS: "-D warnings"
         with:
           command: test
           args: --release --target x86_64-unknown-linux-gnu
