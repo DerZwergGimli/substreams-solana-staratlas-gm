@@ -57,13 +57,14 @@ services:
 
   substream_run:
     image: derzwerggimli/substreams-solana-staratlas-gm
+
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
 
-  substream_run2:
-    image: derzwerggimli/substreams-solana-staratlas-gm
-    environment:
-      STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-    command: bash -c 'source entrypoint.sh && echo $STREAMINGFAST_KEY'
+#  substream_run2:
+#    image: derzwerggimli/substreams-solana-staratlas-gm
+#    environment:
+#      STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
+#    command: bash -c 'source entrypoint.sh && echo $STREAMINGFAST_KEY'
 
 
