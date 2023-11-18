@@ -4,6 +4,8 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -y build-essential procps curl file git curl jq
 RUN rm -rf /var/lib/apt/lists/*
+
+
 #
 ## Install GO
 #RUN curl -OL https://golang.org/dl/go1.16.7.linux-amd64.tar.gz
@@ -43,12 +45,13 @@ COPY /schema.sql /
 COPY /substreams.wasm /
 RUN ls /
 
+
 COPY /scripts /
+RUN chmod +x init_substream.sh
+RUN chmod +x run_substream.sh
+RUN chmod +x entrypoint.sh
 
-ENV SUBSTREAMS_API_TOKEN="$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token)"
-
-RUN chmod +x ./init_substream.sh
-RUN chmod +x ./run_substream.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 
 

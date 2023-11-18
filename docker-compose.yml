@@ -66,7 +66,8 @@ services:
 
   substream_run2:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    command: bash -c export SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token) && echo $STREAMINGFAST_KEY'
-    #entrypoint: "echo $STREAMINGFAST_KEY"
+    command: "bash -c 'echo $SUBSTREAMS_API_TOKEN'"
+
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
+      SUBSTREAMS_API_TOKEN: $(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary {"api_key":"$STREAMINGFAST_KEY"} | jq -r .token)
