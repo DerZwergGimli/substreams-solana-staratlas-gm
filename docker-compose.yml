@@ -46,12 +46,15 @@ services:
       - "9000:9000"
       - "9005:9005"
 
+
+
+
   substream_setup:
     image: derzwerggimli/substreams-solana-staratlas-gm
     entrypoint: "substreams-sink-sql setup psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable substreams.yaml"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-      DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
+      DSN: 'psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable'
 
 
 
@@ -60,6 +63,8 @@ services:
     image: derzwerggimli/substreams-solana-staratlas-gm
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
+      SINK_MODE: setup
+      SINK_YAML: substreams.yaml
       DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
 
 #  substream_run2:
