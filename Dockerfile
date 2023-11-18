@@ -49,6 +49,7 @@ RUN ls /
 COPY /scripts /
 RUN chmod +x init_substream.sh
 RUN chmod +x run_substream.sh
+COPY /scripts /
 RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
