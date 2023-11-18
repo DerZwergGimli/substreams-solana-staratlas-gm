@@ -61,7 +61,6 @@ services:
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
 
-
   substream_run2:
     image: derzwerggimli/substreams-solana-staratlas-gm
     environment:
