@@ -5,7 +5,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: dev
+      POSTGRES_USER: db
       POSTGRES_PASSWORD: devpass
     volumes:
       - ./data/timescale:/home/postgres/pgdata/data
@@ -63,10 +63,10 @@ services:
   substream_setup:
     image: derzwerggimli/substreams-solana-staratlas-gm
     #entrypoint: "substreams-sink-sql setup psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable substreams.yaml"
-    entrypoint: "substreams-sink-sql setup psql://dev:devpass@timescaledb:5432/dev?sslmode=disable substreams.yaml"
+    entrypoint: "substreams-sink-sql setup psql://db:devpass@timescaledb:5432/db?sslmode=disable substreams.yaml"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-      DSN: 'psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable'
+
 
 
 
@@ -76,8 +76,8 @@ services:
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
       #DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
-      SINK_DB: psql://dev:devpass@timescaledb:5432/dev?sslmode=disable
+      SINK_DB: psql://db:devpass@timescaledb:5432/db?sslmode=disable
       SINK_MODE: run
-      SINK_YAML: substreams.yaml
+
 
 
