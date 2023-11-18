@@ -12,8 +12,8 @@ create table sa_trades
     price     float,
     size      integer,
     volume    float,
-    side      text
-
+    side      text,
+    fee       float
 );
 
 create table sa_order_book

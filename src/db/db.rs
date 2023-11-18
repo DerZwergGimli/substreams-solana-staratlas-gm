@@ -1,5 +1,3 @@
-
-
 use substreams_database_change::tables::Tables;
 use crate::pb::sa::gm::market::v1::{GalacticMarketplaceInstruction, GalacticMarketplaceInstructions};
 
@@ -43,6 +41,7 @@ fn push_create_exchange(tables: &mut Tables, instruction: GalacticMarketplaceIns
         .set("size", instruction.parsed.clone().into_iter().find(|p| p.name == "size").unwrap().value)
         .set("volume", instruction.parsed.clone().into_iter().find(|p| p.name == "volume").unwrap().value)
         .set("side", instruction.parsed.clone().into_iter().find(|p| p.name == "side").unwrap().value)
+        .set("fee", instruction.parsed.clone().into_iter().find(|p| p.name == "fee").unwrap().value)
     ;
 }
 
