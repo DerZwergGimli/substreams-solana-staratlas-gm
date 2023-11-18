@@ -5,6 +5,6 @@ export SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -
 
 echo "Starting..."
 
-substreams-sink-sql $SINK_MODE $DSN $SINK_YAML 142384016: -e mainnet.sol.streamingfast.io:443 --irreversible-only
+substreams-sink-sql $SINK_MODE $SINK_YAML 142384016: -e mainnet.sol.streamingfast.io:443 --irreversible-only
 
 exec "$@"

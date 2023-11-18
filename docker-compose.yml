@@ -80,10 +80,4 @@ services:
       SINK_MODE: run
       SINK_YAML: substreams.yaml
 
-#  substream_run2:
-#    image: derzwerggimli/substreams-solana-staratlas-gm
-#    environment:
-#      STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-#    command: bash -c 'source entrypoint.sh && echo $STREAMINGFAST_KEY'
-
 
