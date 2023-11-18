@@ -76,7 +76,7 @@ services:
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
       #DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
-      DNS: psql://dev:devpass@timescaledb:5432/dev?sslmode=disable
+      SINK_DB: psql://dev:devpass@timescaledb:5432/dev?sslmode=disable
       SINK_MODE: run
       SINK_YAML: substreams.yaml
 
