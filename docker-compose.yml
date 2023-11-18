@@ -63,9 +63,9 @@ services:
     image: derzwerggimli/substreams-solana-staratlas-gm
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
+      DSN: 'psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable'
       SINK_MODE: setup
       SINK_YAML: substreams.yaml
-      DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
 
 #  substream_run2:
 #    image: derzwerggimli/substreams-solana-staratlas-gm
