@@ -41,7 +41,9 @@ RUN substreams-sink-sql
 ## Setup files
 RUN cd / && curl -OL https://github.com/DerZwergGimli/substreams-solana-staratlas-gm/releases/download/v2.0.0/substreams-staratlas-market-v2.0.0.spkg
 COPY /substreams.prod.yaml /substreams.yaml
+COPY /substreams.prod.clickhouse.yaml /substreams.clickhouse.yaml
 COPY /schema.sql /
+COPY /schema-clickhouse.sql /
 COPY /substreams.wasm /
 RUN ls /
 
