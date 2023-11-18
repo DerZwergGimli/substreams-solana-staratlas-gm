@@ -55,7 +55,8 @@ services:
 
   substream_run:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "/run_substream.sh"
+    entrypoint:
+      - "run_substream.sh"
     environment:
       DB: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
