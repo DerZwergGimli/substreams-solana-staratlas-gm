@@ -1,8 +1,8 @@
 version: "3"
 services:
   postgres:
-    container_name: api-db-postgres
-    image: postgres:14
+    container_name: postgres
+    image: postgres:15
     ports:
       - "5432:5432"
     command: [ "postgres", "-cshared_preload_libraries=pg_stat_statements" ]
@@ -13,6 +13,7 @@ services:
       POSTGRES_DB: dev-node
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
       POSTGRES_HOST_AUTH_METHOD: md5
+      PGDATA: /var/lib/pg_data
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
     healthcheck:
@@ -48,14 +49,15 @@ services:
 
   substream_setup:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "substreams-sink-sql setup 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml"
+    entrypoint: "substreams-sink-sql setup 'psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable' substreams.yaml"
 
 
 
   substream_run:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "source env_init && substreams-sink-sql run 'psql://dev-node:insecure-change-me-in-prod@api-db-postgres:5432/dev-node?sslmode=disable' substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only"
+    entrypoint: "/run_substream.sh"
     environment:
+      DB: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
 
 
