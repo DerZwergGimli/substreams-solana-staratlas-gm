@@ -43,8 +43,6 @@ COPY /schema.sql /
 COPY /substreams.wasm /
 RUN ls /
 
-COPY /env_init /
-COPY /run_substream.sh /
 COPY /scripts /
 
 RUN chmod +x ./init_substream.sh
