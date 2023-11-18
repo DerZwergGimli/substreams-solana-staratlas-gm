@@ -4,4 +4,6 @@ SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --dat
 
 export SUBSTREAMS_API_TOKEN
 
+substreams-sink-sql run psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only
+
 exec "$@"
