@@ -45,7 +45,7 @@ RUN ls /
 
 COPY /scripts /
 
-ENV SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token)
+ENV SUBSTREAMS_API_TOKEN="$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{\"api_key\":\"'$STREAMINGFAST_KEY'\"}' | jq -r .token)"
 
 RUN chmod +x ./init_substream.sh
 RUN chmod +x ./run_substream.sh
