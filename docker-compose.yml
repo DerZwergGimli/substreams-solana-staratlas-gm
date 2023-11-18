@@ -49,22 +49,24 @@ services:
 
   substream_setup:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "substreams-sink-sql setup 'psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable' substreams.yaml"
+    entrypoint: "substreams-sink-sql setup psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable substreams.yaml"
+    environment:
+      STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
+
 
 
 
   substream_run:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint:
-      - "run_substream.sh"
+    entrypoint: "source env_init && substreams-sink-sql run psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable substreams.yaml -e mainnet.sol.streamingfast.io:443 142384016: --irreversible-only"
     environment:
-      DB: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
-
+      SUBSTREAMS_API_TOKEN: $(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token)
 
 
   substream_run2:
     image: derzwerggimli/substreams-solana-staratlas-gm
-    entrypoint: "source env_init && echo $SUBSTREAMS_API_TOKEN"
+    command: bash -c export SUBSTREAMS_API_TOKEN=$(curl https://auth.streamingfast.io/v1/auth/issue -s --data-binary '{"api_key":"'$STREAMINGFAST_KEY'"}' | jq -r .token) && echo $STREAMINGFAST_KEY'
+    #entrypoint: "echo $STREAMINGFAST_KEY"
     environment:
       STREAMINGFAST_KEY: ${STREAMINGFAST_KEY}
