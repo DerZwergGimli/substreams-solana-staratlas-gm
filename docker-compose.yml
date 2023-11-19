@@ -80,4 +80,6 @@ services:
       SINK_MODE: run
 
 
+  api:
+    image: derzwerggimli/api-roguemarket-2:latest
 
