@@ -1,5 +1,6 @@
 use anyhow::anyhow;
 use borsh::BorshDeserialize;
+use log::info;
 use substreams::errors::Error;
 use substreams_solana::pb::sol::v1::CompiledInstruction;
 use crate::helper::base2string::account_as_string;
@@ -12,6 +13,7 @@ impl TokenProgram {
     pub fn unpack(instruction: CompiledInstruction, account_list: Vec<Vec<u8>>) -> Result<TokenProgram, Error> {
         let (&tag, rest) = instruction.data.split_first().ok_or(anyhow!("Unable to split instruction data"))?;
 
+        info!("Accounts : {:?}", instruction.accounts);
 
         Ok(match tag {
             12 => {
@@ -22,10 +24,10 @@ impl TokenProgram {
                                 TokenProgram {
                                     program: Some(Program::TokenTransferChecked(
                                         TokenTransferChecked {
-                                            authority: account_as_string(account_list.clone(), instruction.clone().accounts, 0),
-                                            destination: account_as_string(account_list.clone(), instruction.clone().accounts, 1),
-                                            mint: account_as_string(account_list.clone(), instruction.clone().accounts, 2),
-                                            source: account_as_string(account_list.clone(), instruction.clone().accounts, 3),
+                                            authority: account_as_string(account_list.clone(), instruction.clone().accounts, 3),
+                                            destination: account_as_string(account_list.clone(), instruction.clone().accounts, 2),
+                                            mint: account_as_string(account_list.clone(), instruction.clone().accounts, 1),
+                                            source: account_as_string(account_list.clone(), instruction.clone().accounts, 0),
                                             token_amount: Some(
                                                 TokenAmount {
                                                     amount: transfer_amounts.amount,

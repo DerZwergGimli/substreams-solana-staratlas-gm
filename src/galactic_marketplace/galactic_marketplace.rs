@@ -205,8 +205,8 @@ impl GalacticMarketplaceInstruction {
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
 
 
-                let mut side = "NONE".to_string();
                 let mut seller = "".to_string();
+                let mut side = "NONE".to_string();
                 match inner_instructions[0].clone().program {
                     None => {
                         return Err(anyhow!("Error mapping side!"));
@@ -217,10 +217,17 @@ impl GalacticMarketplaceInstruction {
                             Some(Program::TokenTransferChecked(inst_1)) => {
                                 match inst_0.mint == inst_1.mint {
                                     true => {
-                                        side = "SELL".to_string()
+                                        side = "SELL".to_string();
+                                        seller = match inner_instructions[2].clone().program {
+                                            None => { "".to_string() }
+                                            Some(Program::TokenTransferChecked(inst_2)) => {
+                                                inst_2.authority
+                                            }
+                                        };
                                     }
                                     false => {
-                                        side = "BUY".to_string()
+                                        side = "BUY".to_string();
+                                        seller = inst_1.authority;
                                     }
                                 }
                             }
@@ -246,7 +253,6 @@ impl GalacticMarketplaceInstruction {
                         }
                     }
                 };
-
 
                 let price_decimals = get_currency_decimals(accounts.iter().find(|a| (&a.name == "CurrencyMint") || (&a.name == "ReceiveMint")).unwrap().clone().address);
                 let quantity = args.clone().into_iter().find(|a| ((a.name == "OriginationQty") || (a.name == "PurchaseQuantity"))).unwrap().value.parse::<f32>().unwrap();
