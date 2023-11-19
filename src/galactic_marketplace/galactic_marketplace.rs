@@ -64,7 +64,6 @@ impl GalacticMarketplaceInstruction {
                 }
             }
 
-
             43 | 129 => {
                 // ProcessInitializeSell and ProcessInitializeBuy
                 match exchange_args.len() {
@@ -204,69 +203,50 @@ impl GalacticMarketplaceInstruction {
 
                 //INSTRUCTIONS
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
-                info!("{:?}", inner_instructions);
 
 
                 let mut side = "NONE".to_string();
                 let mut seller = "".to_string();
-                match args.clone().iter().find(|a| &a.name == "Seller") {
+                match inner_instructions[0].clone().program {
                     None => {
-                       match inner_instructions[1].clone().program {
-                            None => {}
-                            Some(Program::TokenTransferChecked(inst)) => {
-                                seller = inst.source.to_string();
-
-                                match inst.mint ==  accounts.iter().find(|a| &a.name == "CurrencyMint").unwrap().address {
-                                    true => { side = "BUY".to_string() }
-                                    false => { side = "SELL".to_string() }
+                        return Err(anyhow!("Error mapping side!"));
+                    }
+                    Some(Program::TokenTransferChecked(inst_0)) => {
+                        match inner_instructions[1].clone().program {
+                            None => { return Err(anyhow!("Error mapping side!")); }
+                            Some(Program::TokenTransferChecked(inst_1)) => {
+                                match inst_0.mint == inst_1.mint {
+                                    true => {
+                                        side = "SELL".to_string()
+                                    }
+                                    false => {
+                                        side = "BUY".to_string()
+                                    }
                                 }
-
                             }
                         }
                     }
-                    Some(arg) => {
-                        seller = arg.clone().value;
-
-                        match arg.value == accounts.iter().find(|a|
-                            (&a.name == "OrderTaker")
-                                || (&a.name == "OrderInitializer")).unwrap().address
-                        {
-                            true => { side = "BUY".to_string() }
-                            false => { side = "SELL".to_string() }
-                        };
-                    }
                 }
+                // return Err(anyhow!("Error mapping side!"));
 
 
                 // ADD EXTRAS
                 let mut price_no_decimals = 0.0;
+                info!("{:?}", args);
+
                 match args.clone().into_iter().find(|a| ((a.name == "Price") || (a.name == "ExpectedPrice"))) {
                     None => {
-                        //Calc price manually
-                        let mut currency_amount_fee = 0;
-                        let mut currency_amount = 0;
-
-                        match inner_instructions[0].clone().program {
-                            Some(Program::TokenTransferChecked(data)) => {
-                                currency_amount_fee = data.token_amount.unwrap().amount
-                            }
-                            _ => {
-                                return Err(anyhow!("no price"));
-                            }
-                        }
-
-                        match inner_instructions[1].clone().program {
-                            Some(Program::TokenTransferChecked(data)) => {
-                                currency_amount = data.token_amount.unwrap().amount
-                            }
-                            _ => {
-                                return Err(anyhow!("no price"));
-                            }
-                        }
-                        price_no_decimals = (currency_amount + currency_amount_fee) as f32;
+                        price_no_decimals = calc_price(inner_instructions.clone()).unwrap();
                     }
-                    Some(price) => { price_no_decimals = price.value.parse::<f32>().unwrap() }
+                    Some(price) => {
+                        price_no_decimals = price.value.parse::<f32>().unwrap();
+
+                        if price_no_decimals == 0.0 {
+                            price_no_decimals = calc_price(inner_instructions.clone()).unwrap();
+                        }
+                    }
                 };
+
 
                 let price_decimals = get_currency_decimals(accounts.iter().find(|a| (&a.name == "CurrencyMint") || (&a.name == "ReceiveMint")).unwrap().clone().address);
                 let quantity = args.clone().into_iter().find(|a| ((a.name == "OriginationQty") || (a.name == "PurchaseQuantity"))).unwrap().value.parse::<f32>().unwrap();
@@ -459,7 +439,48 @@ fn map_inner_instruction(transaction: &Transaction, instruction_idx: usize, meta
     inner_instructions
 }
 
+fn calc_price(inner_instructions: Vec<TokenProgram>) -> Result<f32, Error> {
+    //Calc price manually
+    let mut currency_amount_fee = 0;
+    let mut currency_amount = 0;
 
+    match inner_instructions[0].clone().program {
+        Some(Program::TokenTransferChecked(inst_0)) => {
+            currency_amount_fee = inst_0.token_amount.unwrap().amount;
+
+            match inner_instructions[1].clone().program {
+                Some(Program::TokenTransferChecked(inst_1)) => {
+                    if inst_0.mint == inst_1.mint {
+                        currency_amount = inst_1.token_amount.unwrap().amount
+                    }
+                }
+                _ => {
+                    return Err(anyhow!("no price"));
+                }
+            }
+            match inner_instructions[2].clone().program {
+                Some(Program::TokenTransferChecked(inst_2)) => {
+                    if inst_0.mint.to_string() == inst_2.mint.to_string() {
+                        currency_amount = inst_2.token_amount.unwrap().amount
+                    }
+                }
+                _ => {
+                    return Err(anyhow!("no price"));
+                }
+            }
+        }
+        _ => {
+            return Err(anyhow!("no price"));
+        }
+    }
+
+
+    info!("{:?}\n", currency_amount);
+
+    info!("{:?}\n", currency_amount_fee);
+
+    Ok((currency_amount + currency_amount_fee) as f32)
+}
 
 
 
