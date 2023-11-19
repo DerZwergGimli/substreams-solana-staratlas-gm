@@ -238,24 +238,25 @@ impl GalacticMarketplaceInstruction {
 
 
                 // ADD EXTRAS
+                let quantity = args.clone().into_iter().find(|a| ((a.name == "OriginationQty") || (a.name == "PurchaseQuantity"))).unwrap().value.parse::<f32>().unwrap();
+
                 let mut price_no_decimals = 0.0;
                 info!("{:?}", args);
 
                 match args.clone().into_iter().find(|a| ((a.name == "Price") || (a.name == "ExpectedPrice"))) {
                     None => {
-                        price_no_decimals = calc_price(inner_instructions.clone()).unwrap();
+                        price_no_decimals = calc_price(inner_instructions.clone()).unwrap() / quantity;
                     }
                     Some(price) => {
                         price_no_decimals = price.value.parse::<f32>().unwrap();
 
                         if price_no_decimals == 0.0 {
-                            price_no_decimals = calc_price(inner_instructions.clone()).unwrap();
+                            price_no_decimals = calc_price(inner_instructions.clone()).unwrap() / quantity;
                         }
                     }
                 };
 
                 let price_decimals = get_currency_decimals(accounts.iter().find(|a| (&a.name == "CurrencyMint") || (&a.name == "ReceiveMint")).unwrap().clone().address);
-                let quantity = args.clone().into_iter().find(|a| ((a.name == "OriginationQty") || (a.name == "PurchaseQuantity"))).unwrap().value.parse::<f32>().unwrap();
                 let fee =
                     match inner_instructions.len() {
                         3 => {
