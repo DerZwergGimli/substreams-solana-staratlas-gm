@@ -26,6 +26,7 @@ services:
       #DSN: psql://dev-node:insecure-change-me-in-prod@postgres:5432/dev-node?sslmode=disable
       SINK_DB: psql://db:devpass@timescaledb:5432/db?sslmode=disable
       SINK_MODE: run
+      $SINK_FLAGS: '--final-blocks-only'
 
   api:
     image: derzwerggimli/api-roguemarket-2:latest
