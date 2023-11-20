@@ -43,6 +43,7 @@ COPY /substreams.prod.yaml /substreams.yaml
 COPY /substreams.prod.clickhouse.yaml /substreams.clickhouse.yaml
 COPY /schema.sql /
 COPY /schema-clickhouse.sql /
+COPY /substreams.wasm /
 RUN ls /
 
 
