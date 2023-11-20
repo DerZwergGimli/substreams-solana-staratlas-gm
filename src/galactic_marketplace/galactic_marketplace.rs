@@ -6,7 +6,7 @@ use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, Tr
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
 use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_15, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
-use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
+use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
 use crate::pb::sa::gm::market::v1::GalacticMarketplaceInstruction;
@@ -171,6 +171,13 @@ impl GalacticMarketplaceInstruction {
                         {
                             args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: price.to_string() });
                             args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: origination_qty.to_string() });
+                        }
+                    }
+                    16 => {
+                        let ProcessExchangeArgNoPubkey { expected_price, purchase_quantity } = ProcessExchangeArgNoPubkey::try_from_slice(exchange_args)?;
+                        {
+                            args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
+                            args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
                         }
                     }
 
