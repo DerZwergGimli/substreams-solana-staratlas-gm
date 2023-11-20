@@ -266,13 +266,14 @@ impl GalacticMarketplaceInstruction {
                 let price_decimals = get_currency_decimals(accounts.iter().find(|a| (&a.name == "CurrencyMint") || (&a.name == "ReceiveMint")).unwrap().clone().address);
                 let fee =
                     match inner_instructions.len() {
-                        3 => {
+                        3 | 4 => {
                             match inner_instructions[0].program.clone().unwrap() {
                                 Program::TokenTransferChecked(transfer) => {
                                     transfer.token_amount.unwrap().ui_amount_string.parse::<f64>().unwrap()
                                 }
                             }
                         }
+
                         0 => meta.clone().post_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount
                             - meta.clone().pre_token_balances.into_iter().find(|t| t.owner == "feesQYAaH3wjGUUQYD959mmi5pY8HSz3F5C3SVc1fp3").unwrap().ui_token_amount.unwrap().ui_amount,
                         _ => { return Err(anyhow!("No match on inner instruction length= {}!", inner_instructions.len())); }
