@@ -12,8 +12,6 @@ run: build
 	substreams run -e $(ENDPOINT) substreams.yaml map_block -s $(START_BLOCK) -t $(STOP_BLOCK)
 
 
-
-
 .PHONY: map_market_instructions
 map_market_instructions: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222855459 -t 222855461
@@ -34,7 +32,7 @@ map_market_instructions_reg_currency: build
 
 .PHONY: map_market_instructions_failing
 map_market_instructions_failing: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 145656375 -t 145656377
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 149647401 -t 149647402
 
 
 

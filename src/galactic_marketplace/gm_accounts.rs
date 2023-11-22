@@ -1,4 +1,3 @@
-
 pub const PROCESS_EXCHANGE_ACCOUNTS_15: [&str; 14] = [
     "OrderTaker",
     "OrderTakerDepositTokenAccount",
@@ -14,6 +13,28 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_15: [&str; 14] = [
     "SaVault",
     "RegisteredCurrency",
     "OpenOrdersCounter"
+];
+
+
+pub const PROCESS_EXCHANGE_ACCOUNTS_18: [&str; 18] = [
+    "OrderTaker",
+    "OrderTakerDepositTokenAccount",
+    "OrderTakerReceiveTokenAccount",
+    "CurrencyMint",
+    "AssetMint",
+    "OrderInitializer",
+    "InitializerDepositTokenAccount",
+    "InitializerReceiveTokenAccount",
+    "OrderVaultAccount",
+    "OrderVaultAuthority",
+    "OrderAccount",
+    "SaVault",
+    "RegisteredCurrency",
+    "OpenOrdersCounter",
+    "Token Program",
+    "Atlas Staking",
+    "Registered Stake",
+    "Staking Account"
 ];
 
 
