@@ -5,7 +5,7 @@ use substreams::log::info;
 use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
-use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_15, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
+use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_15, PROCESS_EXCHANGE_ACCOUNTS_18, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
@@ -198,6 +198,9 @@ impl GalacticMarketplaceInstruction {
                 accounts = match compiled_instruction.accounts.len() {
                     15 => {
                         map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_15)
+                    }
+                    18 => {
+                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_18)
                     }
                     19 => {
                         map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
