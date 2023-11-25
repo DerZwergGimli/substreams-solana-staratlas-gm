@@ -215,7 +215,8 @@ impl GalacticMarketplaceInstruction {
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
 
 
-                let mut seller = "".to_string();
+                //let mut seller = "".to_string();
+                let mut taker = "".to_string();
                 let mut side = "NONE".to_string();
                 match inner_instructions[0].clone().program {
                     None => {
@@ -228,7 +229,7 @@ impl GalacticMarketplaceInstruction {
                                 match inst_0.mint == inst_1.mint {
                                     true => {
                                         side = "SELL".to_string();
-                                        seller = match inner_instructions[2].clone().program {
+                                        taker = match inner_instructions[2].clone().program {
                                             None => { "".to_string() }
                                             Some(Program::TokenTransferChecked(inst_2)) => {
                                                 inst_2.authority
@@ -237,7 +238,7 @@ impl GalacticMarketplaceInstruction {
                                     }
                                     false => {
                                         side = "BUY".to_string();
-                                        seller = inst_1.authority;
+                                        taker = inst_1.authority;
                                     }
                                 }
                             }
@@ -320,15 +321,15 @@ impl GalacticMarketplaceInstruction {
                 });
                 // 6. buyer
                 parsed.push(Arg {
-                    name: "buyer".to_string(),
+                    name: "taker".to_string(),
                     r#type: "String".to_string(),
-                    value: accounts.clone().into_iter().find(|a| a.name == "OrderInitializer").unwrap().address,
+                    value: taker,
                 });
                 // 7. seller
                 parsed.push(Arg {
-                    name: "seller".to_string(),
+                    name: "maker".to_string(),
                     r#type: "String".to_string(),
-                    value: seller,
+                    value: accounts.clone().into_iter().find(|a| a.name == "OrderInitializer").unwrap().address,
                 });
                 // 8. currency
                 parsed.push(Arg {
