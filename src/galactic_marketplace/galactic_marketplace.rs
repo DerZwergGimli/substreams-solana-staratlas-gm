@@ -217,6 +217,14 @@ impl GalacticMarketplaceInstruction {
 
                 //let mut seller = "".to_string();
                 let mut taker = "".to_string();
+                let mut maker = "".to_string();
+
+
+                let mut currency = "".to_string();
+                let mut asset = "".to_string();
+
+
+
                 let mut side = "NONE".to_string();
                 match inner_instructions[0].clone().program {
                     None => {
@@ -229,15 +237,24 @@ impl GalacticMarketplaceInstruction {
                                 match inst_0.mint == inst_1.mint {
                                     true => {
                                         side = "SELL".to_string();
+                                        currency = inst_0.mint;
                                         taker = match inner_instructions[2].clone().program {
                                             None => { "".to_string() }
                                             Some(Program::TokenTransferChecked(inst_2)) => {
                                                 inst_2.authority
                                             }
                                         };
+                                        asset = match inner_instructions[2].clone().program {
+                                            None => { "".to_string() }
+                                            Some(Program::TokenTransferChecked(inst_2)) => {
+                                                inst_2.mint
+                                            }
+                                        };
                                     }
                                     false => {
                                         side = "BUY".to_string();
+                                        currency = inst_0.mint;
+                                        asset = inst_1.mint;
                                         taker = inst_1.authority;
                                     }
                                 }
@@ -335,13 +352,13 @@ impl GalacticMarketplaceInstruction {
                 parsed.push(Arg {
                     name: "currency".to_string(),
                     r#type: "String".to_string(),
-                    value: accounts.clone().into_iter().find(|a| (a.name == "ReceiveMint") || (a.name == "CurrencyMint")).unwrap().address,
+                    value: currency,
                 });
                 // 9. asset
                 parsed.push(Arg {
                     name: "asset".to_string(),
                     r#type: "String".to_string(),
-                    value: accounts.clone().into_iter().find(|a| (a.name == "DepositMint") || (a.name == "AssetMint")).unwrap().address,
+                    value: asset,
                 });
 
                 GalacticMarketplaceInstruction {
