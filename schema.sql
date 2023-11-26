@@ -7,6 +7,7 @@ create table sa_trades
     signature text,
     maker     text,
     taker     text,
+    seller     text,
     currency  text,
     asset     text,
     price     float,

@@ -39,6 +39,11 @@ PHONY: map_market_instructions_wrong
 map_market_instructions_wrong: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 194167978 -t 194167980
 
+PHONY: map_market_instructions_wrong2
+map_market_instructions_wrong2: build
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 194961470 -t 194961472
+
+
 
 
 

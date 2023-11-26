@@ -34,6 +34,7 @@ fn push_create_exchange(tables: &mut Tables, instruction: GalacticMarketplaceIns
         .set("signature", instruction.meta_data.clone().unwrap().signature)
         .set("maker", instruction.parsed.clone().into_iter().find(|p| p.name == "maker").unwrap().value)
         .set("taker", instruction.parsed.clone().into_iter().find(|p| p.name == "taker").unwrap().value)
+        .set("seller", instruction.parsed.clone().into_iter().find(|p| p.name == "seller").unwrap().value)
         .set("currency", instruction.parsed.clone().into_iter().find(|p| p.name == "currency").unwrap().value)
         .set("asset", instruction.parsed.clone().into_iter().find(|p| p.name == "asset").unwrap().value)
         .set("price", instruction.parsed.clone().into_iter().find(|p| p.name == "price").unwrap().value)
