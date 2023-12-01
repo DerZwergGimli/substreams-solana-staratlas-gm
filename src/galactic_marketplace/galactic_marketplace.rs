@@ -214,7 +214,7 @@ impl GalacticMarketplaceInstruction {
                                 map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
                             }
                             _ => {
-                                return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
+                                return Err(anyhow!("No 19 exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
                             }
                         }
                     }
@@ -230,7 +230,7 @@ impl GalacticMarketplaceInstruction {
                                 map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
                             }
                             _ => {
-                                return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
+                                return Err(anyhow!("No 32 exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
                             }
                         }
                     }
@@ -255,7 +255,7 @@ impl GalacticMarketplaceInstruction {
                 match inner_instructions.len() {
                     0 => {
                         match compiled_instruction.accounts.len() {
-                            19 => {
+                            19 | 32 => {
                                 taker = accounts.clone().into_iter().find(|acc| acc.name == "OrderTaker".to_string()).unwrap().address;
                                 maker = accounts.clone().into_iter().find(|acc| acc.name == "OrderInitializer".to_string()).unwrap().address;
                                 seller = args.clone().into_iter().find(|arg| arg.name == "Seller".to_string()).unwrap().value;
