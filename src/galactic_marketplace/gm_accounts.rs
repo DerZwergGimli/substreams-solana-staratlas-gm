@@ -1,61 +1,4 @@
-pub const PROCESS_EXCHANGE_ACCOUNTS_15: [&str; 14] = [
-    "OrderTaker",
-    "OrderTakerDepositTokenAccount",
-    "OrderTakerReceiveTokenAccount",
-    "CurrencyMint",
-    "AssetMint",
-    "OrderInitializer",
-    "InitializerDepositTokenAccount",
-    "InitializerReceiveTokenAccount",
-    "OrderVaultAccount",
-    "OrderVaultAuthority",
-    "OrderAccount",
-    "SaVault",
-    "RegisteredCurrency",
-    "OpenOrdersCounter"
-];
-
-
-pub const PROCESS_EXCHANGE_ACCOUNTS_18: [&str; 18] = [
-    "OrderTaker",
-    "OrderTakerDepositTokenAccount",
-    "OrderTakerReceiveTokenAccount",
-    "CurrencyMint",
-    "AssetMint",
-    "OrderInitializer",
-    "InitializerDepositTokenAccount",
-    "InitializerReceiveTokenAccount",
-    "OrderVaultAccount",
-    "OrderVaultAuthority",
-    "OrderAccount",
-    "SaVault",
-    "RegisteredCurrency",
-    "OpenOrdersCounter",
-    "Token Program",
-    "Atlas Staking",
-    "Registered Stake",
-    "Staking Account"
-];
-
-
-pub const PROCESS_EXCHANGE_ACCOUNTS_19: [&str; 14] = [
-    "OrderInitializer",
-    "MarketVarsAccount",
-    "DepositMint",
-    "ReceiveMint",
-    "OrderVaultAccount",
-    "OrderVaultAuthority",
-    "InitializerDepositTokenAccount",
-    "InitializerReceiveTokenAccount",
-    "OrderAccount",
-    "RegisteredCurrency",
-    "OpenOrdersCounter",
-    "SystemProgram",
-    "Rent",
-    "TokenProgram",
-];
-
-pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 19] = [
+pub const PROCESS_EXCHANGE_ACCOUNTS_19: [&str; 19] = [
     "OrderTaker",
     "OrderTakerDepositTokenAccount",
     "OrderTakerReceiveTokenAccount",
@@ -75,6 +18,41 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 19] = [
     "RegisteredStake",
     "StakingAccount",
     "FeeReduction",
+];
+
+pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 32] = [
+    "OrderTaker",
+    "OrderTakerDepositTokenAccount",
+    "OrderTakerReceiveTokenAccount",
+    "CurrencyMint",
+    "AssetMint",
+    "OrderInitializer",
+    "InitializerDepositTokenAccount",
+    "InitializerReceiveTokenAccount",
+    "OrderVaultAccount",
+    "OrderVaultAuthority",
+    "OrderAccount",
+    "SaVault",
+    "RegisteredCurrency",
+    "OpenOrdersCounter",
+    "TokenProgram",
+    "AtlasStaking",
+    "RegisteredStake",
+    "StakingAccount",
+    "FeeReduction",
+    "RemainingAccount#1",
+    "RemainingAccount#2",
+    "RemainingAccount#3",
+    "RemainingAccount#4",
+    "RemainingAccount#5",
+    "RemainingAccount#6",
+    "RemainingAccount#7",
+    "RemainingAccount#8",
+    "RemainingAccount#9",
+    "RemainingAccount#10",
+    "RemainingAccount#11",
+    "RemainingAccount#12",
+    "RemainingAccount#13"
 ];
 
 pub const PROCESS_INITIALIZE_ACCOUNTS: [&str; 14] = [

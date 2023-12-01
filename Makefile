@@ -32,12 +32,12 @@ map_market_instructions_reg_currency: build
 
 .PHONY: map_market_instructions_failing
 map_market_instructions_failing: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 149647401 -t 149647402
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222058999 -t 222059001
 
 
 PHONY: map_market_instructions_wrong
 map_market_instructions_wrong: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 194167978 -t 194167980
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222059000 -t 223059001
 
 PHONY: map_market_instructions_wrong2
 map_market_instructions_wrong2: build

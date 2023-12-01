@@ -1,3 +1,4 @@
+use log::info;
 use substreams::errors::Error;
 use substreams::log;
 use substreams::store::{StoreAdd, StoreAddFloat64};
@@ -75,7 +76,7 @@ fn process_blocks_for_instructions(block: sol::v1::Block, instructions: &mut Vec
                     for (instruction_idx, instruction) in message.instructions.clone().into_iter().enumerate() {
                         let program_id = &message.account_keys[instruction.program_id_index as usize];
                         let signature = bs58::encode(transaction.signatures[0].as_slice()).into_string();
-
+                      
                         if bs58::encode(program_id).into_string().as_str() != GM_PROGRAM {
                             continue;
                         }

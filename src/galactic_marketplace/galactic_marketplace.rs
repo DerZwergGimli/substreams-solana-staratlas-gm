@@ -1,3 +1,4 @@
+use std::collections::BTreeMap;
 use anyhow::anyhow;
 use borsh::BorshDeserialize;
 use substreams::errors::Error;
@@ -5,7 +6,7 @@ use substreams::log::info;
 use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
-use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_15, PROCESS_EXCHANGE_ACCOUNTS_18, PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
+use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
@@ -18,7 +19,6 @@ impl GalacticMarketplaceInstruction {
     pub fn unpack(block: Block, transaction: &Transaction, compiled_instruction: &CompiledInstruction, instruction_idx: usize, meta: TransactionStatusMeta) -> Result<Self, Error> {
         let (&tag, rest) = compiled_instruction.data.split_first().ok_or(anyhow!("Unable to split instruction data"))?;
         let (_dump, exchange_args) = rest.split_at(7);
-
 
         let meta_data = Some(MetaData {
             signature: bs58::encode(transaction.signatures[0].as_slice()).into_string(),
@@ -159,60 +159,101 @@ impl GalacticMarketplaceInstruction {
             }
             112 => {
                 // ProcessExchange
-                match exchange_args.len() {
-                    8 => {
-                        let ProcessExchangeArgNoPubkeyAndPrice { purchase_quantity } = ProcessExchangeArgNoPubkeyAndPrice::try_from_slice(exchange_args)?;
-                        {
-                            args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                        }
-                    }
-                    14 => {
-                        let ProcessInitializeSellArgs { price, origination_qty } = ProcessInitializeSellArgs::try_from_slice(exchange_args)?;
-                        {
-                            args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: price.to_string() });
-                            args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: origination_qty.to_string() });
-                        }
-                    }
-                    16 => {
-                        let ProcessExchangeArgNoPubkey { expected_price, purchase_quantity } = ProcessExchangeArgNoPubkey::try_from_slice(exchange_args)?;
-                        {
-                            args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
-                            args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                        }
-                    }
-
-                    48 => {
-                        let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
-                        {
-                            args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                            args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
-                            args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
-                        }
-                    }
-                    _ => {
-                        return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
-                    }
-                }
+                // match exchange_args.len() {
+                //     8 => {
+                //         let ProcessExchangeArgNoPubkeyAndPrice { purchase_quantity } = ProcessExchangeArgNoPubkeyAndPrice::try_from_slice(exchange_args)?;
+                //         {
+                //             args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
+                //         }
+                //     }
+                //     14 => {
+                //         let ProcessInitializeSellArgs { price, origination_qty } = ProcessInitializeSellArgs::try_from_slice(exchange_args)?;
+                //         {
+                //             args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: price.to_string() });
+                //             args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: origination_qty.to_string() });
+                //         }
+                //     }
+                //     16 => {
+                //         let ProcessExchangeArgNoPubkey { expected_price, purchase_quantity } = ProcessExchangeArgNoPubkey::try_from_slice(exchange_args)?;
+                //         {
+                //             args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
+                //             args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
+                //         }
+                //     }
+                //
+                //     48 => {
+                //         let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
+                //         {
+                //             args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
+                //             args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
+                //             args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
+                //         }
+                //     }
+                //     _ => {
+                //         return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
+                //     }
+                // }
 
                 //MAPPING
                 accounts = match compiled_instruction.accounts.len() {
-                    15 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_15)
-                    }
-                    18 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_18)
-                    }
+                    // 15 => {
+                    //     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_15)
+                    // }
+                    // 18 => {
+                    //     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_18)
+                    // }
                     19 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
+                        match exchange_args.len() {
+                            48 => {
+                                let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
+                                {
+                                    args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
+                                    args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
+                                    args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
+                                }
+                                map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
+                            }
+                            _ => {
+                                return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
+                            }
+                        }
                     }
                     32 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+                        match exchange_args.len() {
+                            48 => {
+                                let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
+                                {
+                                    args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
+                                    args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
+                                    args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
+                                }
+                                map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+                            }
+                            _ => {
+                                return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
+                            }
+                        }
                     }
                     _ => return Err(anyhow!("No exchange_args len for compiled_instruction.accounts: len={}", compiled_instruction.accounts.len()))
                 };
 
+
+                info!("transaction=\n{:?}\n", transaction);
+
+                info!("compiled_instruction=\n{:?}\n", compiled_instruction);
+                info!("meta_data=\n{:?}\n", meta_data);
+                info!("meta=\n{:?}\n", meta);
+
+                info!("len = {:?}", compiled_instruction.accounts.len());
+                info!("message=\n{:?}\n", transaction.message);
+                info!("meta=\n{:?}\n", meta);
+
+
                 //INSTRUCTIONS
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
+                info!("inner_instructions=\n{:?}\n", inner_instructions);
+
+                info!("accounts=\n{:?}\n", accounts);
 
 
                 //let mut seller = "".to_string();
@@ -222,54 +263,76 @@ impl GalacticMarketplaceInstruction {
                 let mut currency = "".to_string();
                 let mut asset = "".to_string();
                 let mut side = "NONE".to_string();
-                match inner_instructions[0].clone().program {
-                    None => {
-                        return Err(anyhow!("Error mapping side!"));
+
+                match inner_instructions.len() {
+                    0 => {
+                        match compiled_instruction.accounts.len() {
+                            19 => {
+                                taker = accounts.clone().into_iter().find(|acc| acc.name == "OrderTaker".to_string()).unwrap().address;
+                                maker = accounts.clone().into_iter().find(|acc| acc.name == "OrderInitializer".to_string()).unwrap().address;
+                                seller = args.clone().into_iter().find(|arg| arg.name == "Seller".to_string()).unwrap().value;
+                                currency = accounts.clone().into_iter().find(|acc| acc.name == "CurrencyMint".to_string()).unwrap().address;
+                                asset = accounts.clone().into_iter().find(|acc| acc.name == "AssetMint".to_string()).unwrap().address;
+                                side = match args.clone().into_iter().find(|arg| arg.name == "Seller".to_string()).unwrap().value == accounts.clone().into_iter().find(|acc| acc.name == "OrderTaker".to_string()).unwrap().address
+                                {
+                                    true => { "BUY".to_string() }
+                                    false => { "SELL".to_string() }
+                                }
+                            }
+
+                            _ => return Err(anyhow!("No exchange_args len for compiled_instruction.accounts: while no inner instructions len={}", compiled_instruction.accounts.len()))
+                        }
                     }
-                    Some(Program::TokenTransferChecked(inst_0)) => {
-                        match inner_instructions[1].clone().program {
-                            None => { return Err(anyhow!("Error mapping side!")); }
-                            Some(Program::TokenTransferChecked(inst_1)) => {
-                                match inst_0.mint == inst_1.mint {
-                                    true => {
-                                        side = "SELL".to_string();
-                                        currency = inst_0.mint;
+                    _ => {
+                        match inner_instructions[0].clone().program {
+                            None => {
+                                return Err(anyhow!("Error mapping side!"));
+                            }
+                            Some(Program::TokenTransferChecked(inst_0)) => {
+                                match inner_instructions[1].clone().program {
+                                    None => { return Err(anyhow!("Error mapping side!")); }
+                                    Some(Program::TokenTransferChecked(inst_1)) => {
+                                        match inst_0.mint == inst_1.mint {
+                                            true => {
+                                                side = "SELL".to_string();
+                                                currency = inst_0.mint;
 
-                                        taker = match inner_instructions[1].clone().program {
-                                            None => { "".to_string() }
-                                            Some(Program::TokenTransferChecked(inst_1)) => {
-                                                inst_1.authority
+                                                taker = match inner_instructions[1].clone().program {
+                                                    None => { "".to_string() }
+                                                    Some(Program::TokenTransferChecked(inst_1)) => {
+                                                        inst_1.authority
+                                                    }
+                                                };
+                                                maker = accounts[5].clone().address;
+                                                asset = match inner_instructions[2].clone().program {
+                                                    None => { "".to_string() }
+                                                    Some(Program::TokenTransferChecked(inst_2)) => {
+                                                        inst_2.mint
+                                                    }
+                                                };
+                                                seller = maker.clone();
                                             }
-                                        };
-                                        maker = accounts[5].clone().address;
-                                        asset = match inner_instructions[2].clone().program {
-                                            None => { "".to_string() }
-                                            Some(Program::TokenTransferChecked(inst_2)) => {
-                                                inst_2.mint
-                                            }
-                                        };
-                                        seller = maker.clone();
-                                    }
-                                    false => {
-                                        side = "BUY".to_string();
-                                        currency = inst_0.mint;
-                                        asset = inst_1.mint;
-                                        taker = match inner_instructions[1].clone().program {
-                                            None => { "".to_string() }
-                                            Some(Program::TokenTransferChecked(inst_1)) => {
-                                                inst_1.authority
-                                            }
-                                        };
+                                            false => {
+                                                side = "BUY".to_string();
+                                                currency = inst_0.mint;
+                                                asset = inst_1.mint;
+                                                taker = match inner_instructions[1].clone().program {
+                                                    None => { "".to_string() }
+                                                    Some(Program::TokenTransferChecked(inst_1)) => {
+                                                        inst_1.authority
+                                                    }
+                                                };
 
-                                        maker = accounts[5].clone().address;
-                                        seller = taker.clone();
+                                                maker = accounts[5].clone().address;
+                                                seller = taker.clone();
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-                // return Err(anyhow!("Error mapping side!"));
 
 
                 // ADD EXTRAS
@@ -457,7 +520,7 @@ fn map_account_names(account_list: Vec<Vec<u8>>, instruction_accounts: Vec<u8>, 
             name: account_name.to_string(),
             address: account_as_string(account_list.clone(), instruction_accounts.clone(), account_name_idx),
             is_mut: None,
-            is_signer: None,
+            is_signer: Some(bs58::encode(&account_list[0].clone()).into_string() == account_as_string(account_list.clone(), instruction_accounts.clone(), account_name_idx)),
         })
     }
     accounts
@@ -483,8 +546,6 @@ fn map_inner_instruction(transaction: &Transaction, instruction_idx: usize, meta
             // We dont have inner instruction
         }
     }
-
-
     inner_instructions
 }
 
