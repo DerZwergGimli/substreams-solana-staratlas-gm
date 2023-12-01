@@ -238,22 +238,10 @@ impl GalacticMarketplaceInstruction {
                 };
 
 
-                info!("transaction=\n{:?}\n", transaction);
-
-                info!("compiled_instruction=\n{:?}\n", compiled_instruction);
-                info!("meta_data=\n{:?}\n", meta_data);
-                info!("meta=\n{:?}\n", meta);
-
-                info!("len = {:?}", compiled_instruction.accounts.len());
-                info!("message=\n{:?}\n", transaction.message);
-                info!("meta=\n{:?}\n", meta);
-
-
                 //INSTRUCTIONS
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
-                info!("inner_instructions=\n{:?}\n", inner_instructions);
-
-                info!("accounts=\n{:?}\n", accounts);
+                // info!("inner_instructions=\n{:?}\n", inner_instructions);
+                // info!("accounts=\n{:?}\n", accounts);
 
 
                 //let mut seller = "".to_string();
