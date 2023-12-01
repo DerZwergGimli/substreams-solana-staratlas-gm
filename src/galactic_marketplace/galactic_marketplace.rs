@@ -6,7 +6,7 @@ use substreams::log::info;
 use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
-use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS};
+use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
@@ -83,9 +83,12 @@ impl GalacticMarketplaceInstruction {
                 //MAPPING
                 accounts = match compiled_instruction.accounts.len() {
                     14 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS)
+                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_14)
                     }
-                    _ => return Err(anyhow!("No exchange_args len for compiled_instruction.accounts: len={}", compiled_instruction.accounts.len()))
+                    27 => {
+                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_27)
+                    }
+                    _ => return Err(anyhow!("No exchange_args len for  compiled_instruction.accounts: for mapping len={}", compiled_instruction.accounts.len()))
                 };
 
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta);

@@ -44,6 +44,10 @@ map_market_instructions_wrong2: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 194961470 -t 194961472
 
 
+.PHONY: map_sa_trades_test_001
+map_sa_trades_test_001: build
+	substreams run -e mainnet.sol.streamingfast.io:443 substreams.yaml map_market_instructions --start-block 223536275 --stop-block 223536277
+
 
 
 

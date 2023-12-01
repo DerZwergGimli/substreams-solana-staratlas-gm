@@ -55,7 +55,7 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 32] = [
     "RemainingAccount#13"
 ];
 
-pub const PROCESS_INITIALIZE_ACCOUNTS: [&str; 14] = [
+pub const PROCESS_INITIALIZE_ACCOUNTS_14: [&str; 14] = [
     "orderInitializer",
     "marketVarsAccount",
     "depositMint",
@@ -71,6 +71,37 @@ pub const PROCESS_INITIALIZE_ACCOUNTS: [&str; 14] = [
     "rent",
     "tokenProgram",
 ];
+
+pub const PROCESS_INITIALIZE_ACCOUNTS_27: [&str; 27] = [
+    "OrderInitializer",
+    "MarketVarsAccount",
+    "DepositMint",
+    "ReceiveMint",
+    "OrderVaultAccount",
+    "OrderVaultAuthority",
+    "InitializerDepositTokenAccount",
+    "InitializerReceiveTokenAccount",
+    "OrderAccount",
+    "RegisteredCurrency",
+    "OpenOrdersCounter",
+    "SystemProgram",
+    "Rent",
+    "TokenProgram",
+    "Account#1",
+    "Account#2",
+    "Account#3",
+    "Account#4",
+    "Account#5",
+    "Account#6",
+    "Account#7",
+    "Account#8",
+    "Account#9",
+    "Account#10",
+    "Account#11",
+    "Account#12",
+    "Account#13",
+];
+
 
 pub const PROCESS_CANCEL_ACCOUNTS: [&str; 10] = [
     "signer",
