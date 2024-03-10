@@ -6,7 +6,7 @@ use substreams::log::info;
 use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
-use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_33, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
+use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_28, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
@@ -237,11 +237,10 @@ impl GalacticMarketplaceInstruction {
 
 
                                 if (transaction.message.clone().unwrap().account_keys.len() == 28) {
-                                    info!("ok");
-                                    let mut inst_accs = compiled_instruction.accounts.clone();
-                                    inst_accs.truncate(inst_accs.len() - 5);
-                                    info!("{}", inst_accs.len());
-                                    map_account_names(transaction.message.clone().unwrap().account_keys, inst_accs, &PROCESS_EXCHANGE_ACCOUNTS_33)
+                                    info!("{:?}", compiled_instruction);
+
+
+                                    map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_28)
                                 } else {
                                     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
                                 }
@@ -524,9 +523,9 @@ impl GalacticMarketplaceInstruction {
 fn map_account_names(account_list: Vec<Vec<u8>>, instruction_accounts: Vec<u8>, account_map: &[&str]) -> Vec<Account> {
     let mut accounts = vec![];
 
-    info!("account_list={:?}\n", account_list.len());
-    info!("instruction_accounts={:?}\n", instruction_accounts.len());
-    info!("account_map={:?}\n", account_map.len());
+    info!("account_list={:?}", account_list.len());
+    info!("instruction_accounts={:?}", instruction_accounts.len());
+    info!("account_map={:?}", account_map.len());
 
     for (account_name_idx, account_name) in account_map.into_iter().enumerate() {
         accounts.push(Account {
