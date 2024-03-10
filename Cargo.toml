@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 substreams = "0.5"
-substreams-solana = "0.2.0"
+substreams-solana = "0.11.1"
 substreams-database-change = "1.0.0"
 anyhow = "1.0.75"
 prost = "0.11"

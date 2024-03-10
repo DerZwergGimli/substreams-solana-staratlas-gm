@@ -3,11 +3,11 @@ use substreams::errors::Error;
 use substreams::log;
 use substreams::store::{StoreAdd, StoreAddFloat64};
 
-use substreams_solana::pb::sol;
 
 use db::db::add_process_exchange;
 use substreams_database_change::pb::database::{DatabaseChanges};
 use substreams::store::StoreNew;
+use substreams_solana::pb::sf::solana::r#type::v1::Block;
 use crate::galactic_marketplace::GM_PROGRAM;
 use crate::pb::sa::gm::market::v1::{GalacticMarketplaceInstruction, GalacticMarketplaceInstructions};
 
@@ -17,9 +17,10 @@ mod helper;
 mod galactic_marketplace;
 mod db;
 mod solana_token_program;
+mod lookup;
 
 #[substreams::handlers::map]
-fn map_market_instructions(blk: sol::v1::Block) -> Result<GalacticMarketplaceInstructions, Error> {
+fn map_market_instructions(blk: Block) -> Result<GalacticMarketplaceInstructions, Error> {
     log::info!("map_market_instructions");
     let mut galactic_marketplace_instructions = vec![];
     process_blocks_for_instructions(blk, &mut galactic_marketplace_instructions).unwrap();
@@ -64,7 +65,7 @@ pub fn db_out(
     Ok(tables.to_database_changes())
 }
 
-fn process_blocks_for_instructions(block: sol::v1::Block, instructions: &mut Vec<GalacticMarketplaceInstruction>) -> Result<(), Error> {
+fn process_blocks_for_instructions(block: Block, instructions: &mut Vec<GalacticMarketplaceInstruction>) -> Result<(), Error> {
     for trx in block.clone().transactions {
         if let Some(meta) = trx.clone().meta {
             if meta.err.is_some() {
@@ -82,11 +83,7 @@ fn process_blocks_for_instructions(block: sol::v1::Block, instructions: &mut Vec
                         }
 
 
-                        // //ignore
-                        // if signature == "4KEeqGNcUaWhqRVv9RynNWW3jJxFq92aEUuL8QiH4gr5wS1i3EqMerDppCTf3Kh2kLKGEC7miK7Sc1rxzb7vJXAG"
-                        // {
-                        //     continue;
-                        // }
+                        info!("signature = {:?}", signature);
                         match GalacticMarketplaceInstruction::unpack(
                             block.clone(),
                             &transaction,

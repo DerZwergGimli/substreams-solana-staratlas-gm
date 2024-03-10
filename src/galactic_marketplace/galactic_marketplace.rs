@@ -3,12 +3,13 @@ use anyhow::anyhow;
 use borsh::BorshDeserialize;
 use substreams::errors::Error;
 use substreams::log::info;
-use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
+use substreams_solana::pb::sf::solana::r#type::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
 use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_28, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
+use crate::lookup::{LOOKUP_TABLE, LOOKUP_TABLE_KEY};
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
 use crate::pb::sa::gm::market::v1::GalacticMarketplaceInstruction;
 use crate::pb::sol::token::program::v1::token_program::Program;
@@ -162,44 +163,6 @@ impl GalacticMarketplaceInstruction {
             }
             112 => {
                 // ProcessExchange
-                // match exchange_args.len() {
-                //     8 => {
-                //         let ProcessExchangeArgNoPubkeyAndPrice { purchase_quantity } = ProcessExchangeArgNoPubkeyAndPrice::try_from_slice(exchange_args)?;
-                //         {
-                //             args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                //         }
-                //     }
-                //     14 => {
-                //         let ProcessInitializeSellArgs { price, origination_qty } = ProcessInitializeSellArgs::try_from_slice(exchange_args)?;
-                //         {
-                //             args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: price.to_string() });
-                //             args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: origination_qty.to_string() });
-                //         }
-                //     }
-                //     16 => {
-                //         let ProcessExchangeArgNoPubkey { expected_price, purchase_quantity } = ProcessExchangeArgNoPubkey::try_from_slice(exchange_args)?;
-                //         {
-                //             args.push(Arg { name: "Price".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
-                //             args.push(Arg { name: "OriginationQty".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                //         }
-                //     }
-                //
-                //     48 => {
-                //         let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
-                //         {
-                //             args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
-                //             args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
-                //             args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
-                //         }
-                //     }
-                //     _ => {
-                //         return Err(anyhow!("No exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
-                //     }
-                // }
-
-                //MAPPING
-
-
                 accounts = match compiled_instruction.accounts.len() {
                     // 15 => {
                     //     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_15)
@@ -211,6 +174,7 @@ impl GalacticMarketplaceInstruction {
                     19 => {
                         match exchange_args.len() {
                             48 => {
+                                info!("ProcessExchangeArgsWithPubkey 19");
                                 let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
                                 {
                                     args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
@@ -227,6 +191,7 @@ impl GalacticMarketplaceInstruction {
                     32 => {
                         match exchange_args.len() {
                             48 => {
+                                info!("ProcessExchangeArgsWithPubkey 32");
                                 //With ref?
                                 let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
                                 {
@@ -236,13 +201,16 @@ impl GalacticMarketplaceInstruction {
                                 }
 
 
-                                if (transaction.message.clone().unwrap().account_keys.len() == 28) {
-                                    info!("{:?}", compiled_instruction);
-
-
-                                    map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_28)
-                                } else {
-                                    map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+                                let account_keys = append_extra_accounts(transaction);
+                                info!("{:?}", transaction.message.clone().unwrap().account_keys.len());
+                                info!("{:?}", transaction.message.clone().unwrap().address_table_lookups);
+                                match transaction.message.clone().unwrap().account_keys.len() {
+                                    30 => {
+                                        map_account_names(account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_28)
+                                    }
+                                    _ => {
+                                        map_account_names(account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+                                    }
                                 }
                             }
                             _ => {
@@ -252,16 +220,12 @@ impl GalacticMarketplaceInstruction {
                     }
                     _ => return Err(anyhow!("No exchange_args len for compiled_instruction.accounts: len={}", compiled_instruction.accounts.len()))
                 };
-
+                info!("Done here");
                 if (accounts.len() == 0) {}
 
 
                 //INSTRUCTIONS
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
-
-                // info!("inner_instructions=\n{:?}\n", inner_instructions);
-                // info!("accounts=\n{:?}\n", accounts);
-
 
                 //let mut seller = "".to_string();
                 let mut taker = "".to_string();
@@ -527,6 +491,10 @@ fn map_account_names(account_list: Vec<Vec<u8>>, instruction_accounts: Vec<u8>, 
     info!("instruction_accounts={:?}", instruction_accounts.len());
     info!("account_map={:?}", account_map.len());
 
+    info!("account_list={:?}", account_list);
+    info!("instruction_accounts={:?}", instruction_accounts);
+    info!("account_map={:?}", account_map);
+
     for (account_name_idx, account_name) in account_map.into_iter().enumerate() {
         accounts.push(Account {
             name: account_name.to_string(),
@@ -546,15 +514,18 @@ fn map_inner_instruction(transaction: &Transaction, instruction_idx: usize, meta
             for inner_instruction in meta.inner_instructions.into_iter().find(|i| i.index == instruction_idx as u32).unwrap().instructions
             {
                 //TEMP_FIX LEN instruction example at block: 253034209
-                if (transaction.message.clone().unwrap().account_keys.len() >= inner_instruction.program_id_index as usize)
-                {
-                    //Map only the ones with the Token-ProgramID
-                    if bs58::encode(&transaction.message.clone().unwrap().account_keys[inner_instruction.program_id_index as usize]).into_string().as_str() == TOKEN_PROGRAM {
-                        if let Ok(parsed) = TokenProgram::unpack(inner_instruction, transaction.message.clone().unwrap().account_keys) {
-                            inner_instructions.push(parsed)
-                        }
+
+                //Map only the ones with the Token-ProgramID
+                let account_keys = append_extra_accounts(transaction);
+                account_keys.clone().into_iter().for_each(|key| {
+                    info!("key{:?}", bs58::encode(key).into_string())
+                });
+                if bs58::encode(&account_keys[inner_instruction.program_id_index as usize]).into_string().as_str() == TOKEN_PROGRAM {
+                    if let Ok(parsed) = TokenProgram::unpack(inner_instruction, account_keys) {
+                        inner_instructions.push(parsed)
                     }
                 }
+                info!("{:?}",inner_instructions);
             }
         }
 
@@ -609,5 +580,16 @@ fn calc_price(inner_instructions: Vec<TokenProgram>) -> Result<f32, Error> {
 }
 
 
+fn append_extra_accounts(transaction: &Transaction) -> Vec<Vec<u8>> {
+    let mut account_keys = transaction.message.clone().unwrap().account_keys;
+
+    if transaction.message.clone().unwrap().address_table_lookups.len() > 0 {
+        let lookup = transaction.message.clone().unwrap().address_table_lookups[0].clone();
+        let mut extra_accounts: Vec<Vec<u8>> = vec![];
+        extra_accounts = lookup.readonly_indexes.into_iter().map(|index| bs58::decode(LOOKUP_TABLE[index as usize].to_string()).into_vec().unwrap()).collect();
+        account_keys.append(&mut extra_accounts);
+    }
+    account_keys
+}
 
 

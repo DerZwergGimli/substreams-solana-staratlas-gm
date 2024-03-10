@@ -2,15 +2,17 @@ use anyhow::anyhow;
 use borsh::BorshDeserialize;
 use log::info;
 use substreams::errors::Error;
-use substreams_solana::pb::sol::v1::CompiledInstruction;
+use substreams_solana::pb::sf::solana::r#type::v1::{CompiledInstruction, InnerInstruction};
+
 use crate::helper::base2string::account_as_string;
 use crate::pb::sol::token::program::v1::token_program::Program;
 use crate::pb::sol::token::program::v1::{TokenProgram, TokenTransferChecked};
 use crate::pb::sol::token::program::v1::token_transfer_checked::TokenAmount;
 use crate::solana_token_program::token_program_accounts::TransferAmounts;
 
+
 impl TokenProgram {
-    pub fn unpack(instruction: CompiledInstruction, account_list: Vec<Vec<u8>>) -> Result<TokenProgram, Error> {
+    pub fn unpack(instruction: InnerInstruction, account_list: Vec<Vec<u8>>) -> Result<TokenProgram, Error> {
         let (&tag, rest) = instruction.data.split_first().ok_or(anyhow!("Unable to split instruction data"))?;
 
         info!("Accounts : {:?}", instruction.accounts);

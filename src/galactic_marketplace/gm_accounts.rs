@@ -55,7 +55,7 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 32] = [
     "RemainingAccount#13"
 ];
 
-pub const PROCESS_EXCHANGE_ACCOUNTS_28: [&str; 28] = [
+pub const PROCESS_EXCHANGE_ACCOUNTS_28: [&str; 32] = [
     "OrderTaker",
     "OrderTakerDepositTokenAccount",
     "OrderTakerReceiveTokenAccount",
@@ -83,6 +83,10 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_28: [&str; 28] = [
     "RemainingAccount#6",
     "RemainingAccount#7",
     "RemainingAccount#8",
+    "RemainingAccount#9",
+    "RemainingAccount#10",
+    "RemainingAccount#11",
+    "RemainingAccount#12",
     "SELLER"
 ];
 
