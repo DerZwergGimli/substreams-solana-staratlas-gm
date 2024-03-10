@@ -546,11 +546,14 @@ fn map_inner_instruction(transaction: &Transaction, instruction_idx: usize, meta
             // We have inner instruction do it simple
             for inner_instruction in meta.inner_instructions.into_iter().find(|i| i.index == instruction_idx as u32).unwrap().instructions
             {
-                //Map only the ones with the Token-ProgramID
-
-                if bs58::encode(&transaction.message.clone().unwrap().account_keys[inner_instruction.program_id_index as usize]).into_string().as_str() == TOKEN_PROGRAM {
-                    if let Ok(parsed) = TokenProgram::unpack(inner_instruction, transaction.message.clone().unwrap().account_keys) {
-                        inner_instructions.push(parsed)
+                //TEMP_FIX LEN instruction example at block: 253034209
+                if (transaction.message.clone().unwrap().account_keys.len() >= inner_instruction.program_id_index as usize)
+                {
+                    //Map only the ones with the Token-ProgramID
+                    if bs58::encode(&transaction.message.clone().unwrap().account_keys[inner_instruction.program_id_index as usize]).into_string().as_str() == TOKEN_PROGRAM {
+                        if let Ok(parsed) = TokenProgram::unpack(inner_instruction, transaction.message.clone().unwrap().account_keys) {
+                            inner_instructions.push(parsed)
+                        }
                     }
                 }
             }

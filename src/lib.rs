@@ -80,12 +80,12 @@ fn process_blocks_for_instructions(block: sol::v1::Block, instructions: &mut Vec
                         if bs58::encode(program_id).into_string().as_str() != GM_PROGRAM {
                             continue;
                         }
-               
-                        //ignore
-                        if signature == "4KEeqGNcUaWhqRVv9RynNWW3jJxFq92aEUuL8QiH4gr5wS1i3EqMerDppCTf3Kh2kLKGEC7miK7Sc1rxzb7vJXAG"
-                        {
-                            continue;
-                        }
+
+                        // //ignore
+                        // if signature == "4KEeqGNcUaWhqRVv9RynNWW3jJxFq92aEUuL8QiH4gr5wS1i3EqMerDppCTf3Kh2kLKGEC7miK7Sc1rxzb7vJXAG"
+                        // {
+                        //     continue;
+                        // }
                         match GalacticMarketplaceInstruction::unpack(
                             block.clone(),
                             &transaction,
