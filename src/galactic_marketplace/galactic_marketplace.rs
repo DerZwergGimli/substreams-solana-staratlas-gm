@@ -6,7 +6,7 @@ use substreams::log::info;
 use substreams_solana::pb::sol::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
 
 use crate::galactic_marketplace::currencies::get_currency_decimals;
-use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
+use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_33, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
@@ -198,6 +198,8 @@ impl GalacticMarketplaceInstruction {
                 // }
 
                 //MAPPING
+
+
                 accounts = match compiled_instruction.accounts.len() {
                     // 15 => {
                     //     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_15)
@@ -205,6 +207,7 @@ impl GalacticMarketplaceInstruction {
                     // 18 => {
                     //     map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_18)
                     // }
+
                     19 => {
                         match exchange_args.len() {
                             48 => {
@@ -224,13 +227,24 @@ impl GalacticMarketplaceInstruction {
                     32 => {
                         match exchange_args.len() {
                             48 => {
+                                //With ref?
                                 let ProcessExchangeArgsWithPubkey { purchase_quantity, expected_price, seller } = ProcessExchangeArgsWithPubkey::try_from_slice(exchange_args)?;
                                 {
                                     args.push(Arg { name: "PurchaseQuantity".to_string(), r#type: "u64".to_string(), value: purchase_quantity.to_string() });
                                     args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
                                     args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
                                 }
-                                map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+
+
+                                if (transaction.message.clone().unwrap().account_keys.len() == 28) {
+                                    info!("ok");
+                                    let mut inst_accs = compiled_instruction.accounts.clone();
+                                    inst_accs.truncate(inst_accs.len() - 5);
+                                    info!("{}", inst_accs.len());
+                                    map_account_names(transaction.message.clone().unwrap().account_keys, inst_accs, &PROCESS_EXCHANGE_ACCOUNTS_33)
+                                } else {
+                                    map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_32)
+                                }
                             }
                             _ => {
                                 return Err(anyhow!("No 32 exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
@@ -240,9 +254,12 @@ impl GalacticMarketplaceInstruction {
                     _ => return Err(anyhow!("No exchange_args len for compiled_instruction.accounts: len={}", compiled_instruction.accounts.len()))
                 };
 
+                if (accounts.len() == 0) {}
+
 
                 //INSTRUCTIONS
                 inner_instructions = map_inner_instruction(transaction, instruction_idx, meta.clone());
+
                 // info!("inner_instructions=\n{:?}\n", inner_instructions);
                 // info!("accounts=\n{:?}\n", accounts);
 
@@ -506,6 +523,11 @@ impl GalacticMarketplaceInstruction {
 
 fn map_account_names(account_list: Vec<Vec<u8>>, instruction_accounts: Vec<u8>, account_map: &[&str]) -> Vec<Account> {
     let mut accounts = vec![];
+
+    info!("account_list={:?}\n", account_list.len());
+    info!("instruction_accounts={:?}\n", instruction_accounts.len());
+    info!("account_map={:?}\n", account_map.len());
+
     for (account_name_idx, account_name) in account_map.into_iter().enumerate() {
         accounts.push(Account {
             name: account_name.to_string(),
@@ -525,6 +547,7 @@ fn map_inner_instruction(transaction: &Transaction, instruction_idx: usize, meta
             for inner_instruction in meta.inner_instructions.into_iter().find(|i| i.index == instruction_idx as u32).unwrap().instructions
             {
                 //Map only the ones with the Token-ProgramID
+
                 if bs58::encode(&transaction.message.clone().unwrap().account_keys[inner_instruction.program_id_index as usize]).into_string().as_str() == TOKEN_PROGRAM {
                     if let Ok(parsed) = TokenProgram::unpack(inner_instruction, transaction.message.clone().unwrap().account_keys) {
                         inner_instructions.push(parsed)

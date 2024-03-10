@@ -55,6 +55,42 @@ pub const PROCESS_EXCHANGE_ACCOUNTS_32: [&str; 32] = [
     "RemainingAccount#13"
 ];
 
+pub const PROCESS_EXCHANGE_ACCOUNTS_33: [&str; 33] = [
+    "OrderTaker",
+    "OrderTakerDepositTokenAccount",
+    "OrderTakerReceiveTokenAccount",
+    "CurrencyMint",
+    "AssetMint",
+    "OrderInitializer",
+    "InitializerDepositTokenAccount",
+    "InitializerReceiveTokenAccount",
+    "OrderVaultAccount",
+    "OrderVaultAuthority",
+    "OrderAccount",
+    "SaVault",
+    "RegisteredCurrency",
+    "OpenOrdersCounter",
+    "TokenProgram",
+    "AtlasStaking",
+    "RegisteredStake",
+    "StakingAccount",
+    "FeeReduction",
+    "RemainingAccount#1",
+    "RemainingAccount#2",
+    "RemainingAccount#3",
+    "RemainingAccount#4",
+    "RemainingAccount#5",
+    "RemainingAccount#6",
+    "RemainingAccount#7",
+    "RemainingAccount#8",
+    "RemainingAccount#9",
+    "RemainingAccount#10",
+    "RemainingAccount#11",
+    "RemainingAccount#12",
+    "RemainingAccount#13",
+    "SELLER"
+];
+
 pub const PROCESS_INITIALIZE_ACCOUNTS_14: [&str; 14] = [
     "orderInitializer",
     "marketVarsAccount",
