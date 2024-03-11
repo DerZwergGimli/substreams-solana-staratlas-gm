@@ -23,7 +23,7 @@ map_market_instructions_long: build
 
 .PHONY: map_market_instructions_from_XXX
 map_market_instructions_from_XXX: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 253040555 -t 253040557
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 253396016 -t 253396018
 
 
 .PHONY: map_market_instructions_reg_currency

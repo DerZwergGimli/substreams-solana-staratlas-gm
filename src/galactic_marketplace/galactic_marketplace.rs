@@ -67,6 +67,7 @@ impl GalacticMarketplaceInstruction {
 
             43 | 129 => {
                 // ProcessInitializeSell and ProcessInitializeBuy
+                info!("ProcessInitializeSell/ProcessInitializeBuy");
                 match exchange_args.len() {
                     16 => {
                         let ProcessInitializeSellArgs { price, origination_qty } = ProcessInitializeSellArgs::try_from_slice(exchange_args)?;
@@ -80,14 +81,14 @@ impl GalacticMarketplaceInstruction {
                     }
                 }
 
-
+                let account_keys = append_extra_accounts(transaction);
                 //MAPPING
                 accounts = match compiled_instruction.accounts.len() {
                     14 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_14)
+                        map_account_names(account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_14)
                     }
                     27 => {
-                        map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_27)
+                        map_account_names(account_keys, compiled_instruction.accounts.clone(), &PROCESS_INITIALIZE_ACCOUNTS_27)
                     }
                     _ => return Err(anyhow!("No exchange_args len for  compiled_instruction.accounts: for mapping len={}", compiled_instruction.accounts.len()))
                 };
