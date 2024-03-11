@@ -16,7 +16,7 @@ binaries:
 modules:
   - name: map_market_instructions
     kind: map
-    initialBlock: 142384000
+    #initialBlock: 142384000
     inputs:
       - source: sf.solana.type.v1.Block
     output:
