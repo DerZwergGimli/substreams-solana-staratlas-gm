@@ -1,6 +1,6 @@
 pub const LOOKUP_TABLE_KEY: &str = "EfWNB46vzfJW27gY6zzpjD6PY7X4rv3kectBHGC3QfRm";
 
-pub const LOOKUP_TABLE: [&str; 106] = [
+pub const LOOKUP_TABLE: [&str; 108] = [
     "CUore1tNkiubxSwDEtLc3Ybs1xfWLs8uGjyydUYZ25xc",
     "CARBWKWvxEuMcq3MqCxYfi7UoFVpL9c4rsQS99tw6i4X",
     "FeorejFjRRAfusN9Fg3WjEZ1dRCf74o6xwT5vDt3R34J",
@@ -106,5 +106,7 @@ pub const LOOKUP_TABLE: [&str; 106] = [
     "EAgUhz4LG8fqtrShFo1NDrvEiNPxEi7kHe96D76NzkAj",
     "9czEqEZ4EkRt7N3HWDcw9qqwys3xRRjGdbn8Jhk8Khwj",
     "DdpXnnYsyUQgJby8TDHbmPwkKyGF4U6bXwCXTQZsrfKP",
-    "9MvZS3TVfv4DZL9W2pT12po384aBHf7wi89KXQ9Z7uwW"
+    "9MvZS3TVfv4DZL9W2pT12po384aBHf7wi89KXQ9Z7uwW",
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+    "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
 ];

@@ -586,9 +586,11 @@ fn append_extra_accounts(transaction: &Transaction) -> Vec<Vec<u8>> {
 
     if transaction.message.clone().unwrap().address_table_lookups.len() > 0 {
         let lookup = transaction.message.clone().unwrap().address_table_lookups[0].clone();
-        let mut extra_accounts: Vec<Vec<u8>> = vec![];
-        extra_accounts = lookup.readonly_indexes.into_iter().map(|index| bs58::decode(LOOKUP_TABLE[index as usize].to_string()).into_vec().unwrap()).collect();
-        account_keys.append(&mut extra_accounts);
+        if (bs58::encode(lookup.account_key).into_string() == "EfWNB46vzfJW27gY6zzpjD6PY7X4rv3kectBHGC3QfRm".to_string()) {
+            let mut extra_accounts: Vec<Vec<u8>> = vec![];
+            extra_accounts = lookup.readonly_indexes.into_iter().map(|index| bs58::decode(LOOKUP_TABLE[index as usize].to_string()).into_vec().unwrap()).collect();
+            account_keys.append(&mut extra_accounts);
+        }
     }
     account_keys
 }
