@@ -183,7 +183,9 @@ impl GalacticMarketplaceInstruction {
                                     args.push(Arg { name: "ExpectedPrice".to_string(), r#type: "u64".to_string(), value: expected_price.to_string() });
                                     args.push(Arg { name: "Seller".to_string(), r#type: "String".to_string(), value: seller.to_string() });
                                 }
-                                map_account_names(transaction.message.clone().unwrap().account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
+                                let account_keys = append_extra_accounts(transaction);
+                                
+                                map_account_names(account_keys, compiled_instruction.accounts.clone(), &PROCESS_EXCHANGE_ACCOUNTS_19)
                             }
                             _ => {
                                 return Err(anyhow!("No 19 exchange_args len ProcessExchange for instruction: len={}", exchange_args.len()));
@@ -489,11 +491,14 @@ impl GalacticMarketplaceInstruction {
 fn map_account_names(account_list: Vec<Vec<u8>>, instruction_accounts: Vec<u8>, account_map: &[&str]) -> Vec<Account> {
     let mut accounts = vec![];
 
-    info!("account_list={:?}", account_list.len());
-    info!("instruction_accounts={:?}", instruction_accounts.len());
-    info!("account_map={:?}", account_map.len());
+    info!("account_list_len={:?}, instruction_accounts_len={:?}, account_map_len={:?}", account_list.len(),instruction_accounts.len(), account_map.len());
 
-    info!("account_list={:?}", account_list);
+    let mut account_list_strings = vec![];
+    account_list.clone().into_iter().for_each(|account|
+        { account_list_strings.push(bs58::encode(account).into_string()) }
+    );
+
+    info!("account_list={:?}", account_list_strings);
     info!("instruction_accounts={:?}", instruction_accounts);
     info!("account_map={:?}", account_map);
 
