@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 use anyhow::anyhow;
 use borsh::BorshDeserialize;
+use log::error;
 use substreams::errors::Error;
 use substreams::log::info;
 use substreams_solana::pb::sf::solana::r#type::v1::{Block, CompiledInstruction, Transaction, TransactionStatusMeta};
@@ -9,7 +10,7 @@ use crate::galactic_marketplace::currencies::get_currency_decimals;
 use crate::galactic_marketplace::gm_accounts::{PROCESS_EXCHANGE_ACCOUNTS_19, PROCESS_EXCHANGE_ACCOUNTS_28, PROCESS_EXCHANGE_ACCOUNTS_32, PROCESS_INITIALIZE_ACCOUNTS_14, PROCESS_INITIALIZE_ACCOUNTS_27};
 use crate::galactic_marketplace::gm_args::{ProcessExchangeArgNoPubkey, ProcessExchangeArgNoPubkeyAndPrice, ProcessExchangeArgsWithPubkey, ProcessInitializeSellArgs};
 use crate::helper::base2string::account_as_string;
-use crate::lookup::{LOOKUP_TABLE, LOOKUP_TABLE_KEY};
+use crate::lookup::{*};
 use crate::pb::sa::gm::market::v1::galactic_marketplace_instruction::{Account, Arg, Instruction::*, MetaData};
 use crate::pb::sa::gm::market::v1::GalacticMarketplaceInstruction;
 use crate::pb::sol::token::program::v1::token_program::Program;
@@ -584,12 +585,36 @@ fn calc_price(inner_instructions: Vec<TokenProgram>) -> Result<f32, Error> {
 fn append_extra_accounts(transaction: &Transaction) -> Vec<Vec<u8>> {
     let mut account_keys = transaction.message.clone().unwrap().account_keys;
 
-    if transaction.message.clone().unwrap().address_table_lookups.len() > 0 {
-        let lookup = transaction.message.clone().unwrap().address_table_lookups[0].clone();
-        if (bs58::encode(lookup.account_key).into_string() == "EfWNB46vzfJW27gY6zzpjD6PY7X4rv3kectBHGC3QfRm".to_string()) {
-            let mut extra_accounts: Vec<Vec<u8>> = vec![];
-            extra_accounts = lookup.readonly_indexes.into_iter().map(|index| bs58::decode(LOOKUP_TABLE[index as usize].to_string()).into_vec().unwrap()).collect();
-            account_keys.append(&mut extra_accounts);
+
+    for address_table_lookup_index in 0..transaction.message.clone().unwrap().address_table_lookups.len() {
+        info!("{:?}",  transaction);
+        let lookup = transaction.message.clone().unwrap().address_table_lookups[address_table_lookup_index].clone();
+        // if (bs58::encode(lookup.account_key.clone()).into_string() == LOOKUP_TABLE_KEY_EF.to_string()) {
+        //     let mut extra_accounts: Vec<Vec<u8>> = vec![];
+        //     extra_accounts = lookup.readonly_indexes.clone().into_iter().map(|index| bs58::decode(LOOKUP_TABLE_EF[index as usize].to_string()).into_vec().unwrap()).collect();
+        //     account_keys.append(&mut extra_accounts);
+        // }
+
+
+        match bs58::encode(lookup.account_key).into_string().as_str() {
+            LOOKUP_TABLE_KEY_EF => {
+                let mut extra_accounts: Vec<Vec<u8>> = vec![];
+                extra_accounts = lookup.readonly_indexes.clone().into_iter().map(|index| bs58::decode(LOOKUP_TABLE_EF[index as usize].to_string()).into_vec().unwrap()).collect();
+                account_keys.append(&mut extra_accounts);
+            }
+            LOOKUP_TABLE_KEY_AY => {
+                let mut extra_accounts: Vec<Vec<u8>> = vec![];
+                extra_accounts = lookup.readonly_indexes.clone().into_iter().map(|index| bs58::decode(LOOKUP_TABLE_AY[index as usize].to_string()).into_vec().unwrap()).collect();
+                account_keys.append(&mut extra_accounts);
+            }
+            LOOKUP_TABLE_KEY_F4 => {
+                let mut extra_accounts: Vec<Vec<u8>> = vec![];
+                extra_accounts = lookup.readonly_indexes.clone().into_iter().map(|index| bs58::decode(LOOKUP_TABLE_F4[index as usize].to_string()).into_vec().unwrap()).collect();
+                account_keys.append(&mut extra_accounts);
+            }
+            _ => {
+                panic!("Not all LUTs could be appended!!")
+            }
         }
     }
     account_keys

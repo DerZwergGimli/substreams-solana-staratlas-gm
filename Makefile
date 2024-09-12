@@ -21,6 +21,11 @@ map_market_instructions_long: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222797230 -t 222798333
 
 
+.PHONY: map_market_instructions_from_284817250
+map_market_instructions_from_284817250: build
+	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 284817249 -t 284817251
+
+
 .PHONY: map_market_instructions_from_XXX
 map_market_instructions_from_XXX: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 253396016 -t 253396018
