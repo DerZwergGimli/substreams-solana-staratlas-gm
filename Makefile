@@ -5,16 +5,16 @@ STOP_BLOCK ?= +10
 
 .PHONY: build
 build:
-	cargo build --target wasm32-unknown-unknown --release
+	LDFLAGS="-Wl,-no_compact_unwind" cargo build --target wasm32-unknown-unknown --release
 
 .PHONY: run
 run: build
 	substreams run -e $(ENDPOINT) substreams.yaml map_block -s $(START_BLOCK) -t $(STOP_BLOCK)
 
 
-.PHONY: map_market_instructions
+.PHONY: map_market_instructions_UpdateFeeRate
 map_market_instructions: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222855459 -t 222855461
+	./substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222855459 -t 222855461
 
 .PHONY: map_market_instructions_long
 map_market_instructions_long: build
@@ -64,12 +64,16 @@ map_sa_trades_test_001: build
 	substreams run -e mainnet.sol.streamingfast.io:443 substreams.yaml map_market_instructions --start-block 223481954 --stop-block 223482000
 
 
+.PHONY: map_sa_lut_test001
+map_sa_lut_test001: build
+	./substreams run -e mainnet.sol.streamingfast.io:443 substreams.yaml map_market_instructions --start-block 302752889 --stop-block 302752891
+
 
 
 ## TESTS
 .PHONY: test_process_exchange
 test_process_exchange: build
-	substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 223187376 -t 223187378
+	./substreams run -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 223187376 -t 223187378
 
 .PHONY: test_process_initalize_buy
 test_process_initalize_buy: build
