@@ -94,7 +94,6 @@ db_out: build
 	substreams run -e $(ENDPOINT_SOL) substreams.yaml db_out -s 222797230 -t 222798333
 
 
-
 .PHONY: gui
 gui: build
 	substreams gui -e $(ENDPOINT_SOL) substreams.yaml map_market_instructions -s 222797230 -t 222798333
